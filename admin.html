@@ -12,7 +12,7 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #FDF6F6;
-            background-image: url('fundo.jpg');
+            background-image: url('fundo.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -46,15 +46,6 @@
             color: #f28c28;
             text-decoration: none;
         }
-
-        /* ESTILO INTERRUPTOR TOGGLE PERSONALIZADO PARA VITRINE */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #B87352;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #B87352;
-        }
     </style>
 </head>
 <body class="text-gray-800 flex flex-col md:flex-row min-h-screen">
@@ -76,7 +67,7 @@
     <!-- TELA DE LOGIN COM GOOGLE -->
     <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
-            <img src="logo.png" alt="Tuane Verardi Confecções" class="mx-auto h-20 md:h-24 w-auto object-contain">
+            <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
             <div>
                 <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
                 <p class="text-xs text-gray-500">Painel Administrativo de Gestão</p>
@@ -94,10 +85,10 @@
     <!-- PAINEL PRINCIPAL -->
     <div id="admin-main-wrapper" class="contents hidden">
         
-        <!-- CABEÇALHO MOBILE COM MENU HAMBÚRGUER -->
-        <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-4 flex justify-between items-center sticky top-0 z-40">
+        <!-- CABEÇALHO MOBILE -->
+        <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-3 flex justify-between items-center sticky top-0 z-40">
             <div class="flex items-center gap-2">
-                <img src="logo.png" alt="Logo" class="h-10 w-auto">
+                <img src="cabe2.png" alt="Logo" class="h-12 w-auto">
                 <span class="font-extrabold text-sm text-rose-gold">Painel Gestor</span>
             </div>
             <button id="btn-toggle-menu-mobile" class="p-2 text-rose-gold font-extrabold text-2xl focus:outline-none">
@@ -105,11 +96,11 @@
             </button>
         </header>
 
-        <!-- MENU LATERAL RESPONSIVO (GAVETA NO MOBILE) -->
+        <!-- MENU LATERAL RESPONSIVO -->
         <aside id="sidebar-admin" class="fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen transition-transform transform -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="space-y-6">
                 <div class="flex justify-between items-center md:block">
-                    <img src="logo.png" alt="Tuane Verardi" class="h-20 w-auto mx-auto object-contain">
+                    <img src="cabe2.png" alt="Tuane Verardi" class="h-24 md:h-28 w-auto mx-auto object-contain">
                     <button id="btn-fechar-menu-mobile" class="md:hidden text-gray-500 font-bold text-xl">✕</button>
                 </div>
                 
@@ -133,7 +124,6 @@
             </div>
         </aside>
 
-        <!-- MÁSCARA ESCURA PARA FECHAR MENU MOBILE AO CLICAR FORA -->
         <div id="overlay-menu-mobile" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
 
         <main class="flex-1 p-4 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm w-full overflow-x-hidden">
@@ -177,7 +167,6 @@
                             </div>
                         </div>
 
-                        <!-- AJUSTE NO BOTAO TOGGLE DE EXIBIR NA VITRINE -->
                         <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between gap-3">
                             <div>
                                 <h4 class="text-xs font-extrabold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
@@ -199,6 +188,7 @@
                                 <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos e Variações do Produto</label>
                                 <button type="button" id="btn-add-foto" class="w-full sm:w-auto bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
                             </div>
+                            <!-- AS NOVAS VARIAÇÕES AGORA ENTRAM NO INÍCIO AQUI -->
                             <div id="container-fotos-dinamico" class="space-y-4"></div>
                         </div>
 
@@ -209,7 +199,7 @@
                     </form>
                 </div>
 
-                <!-- TABELA COM SCROLL HORIZONTAL MOBILE -->
+                <!-- TABELA DE PRODUTOS -->
                 <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 overflow-x-auto">
                     <table class="w-full text-left min-w-[500px]">
                         <thead>
@@ -255,7 +245,6 @@
             document.getElementById('nav-estoque').addEventListener('click', () => alternarAba(false));
             document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba(true));
 
-            // CONTROLE DO TOGGLE PERSONALIZADO
             const toggleInput = document.getElementById('prod-vitrine');
             const toggleBg = document.getElementById('toggle-bg');
             const toggleDot = document.getElementById('toggle-dot');
@@ -270,7 +259,6 @@
                 }
             });
 
-            // NAVEGAÇÃO MOBILE
             const btnMenuMob = document.getElementById('btn-toggle-menu-mobile');
             const btnFecharMob = document.getElementById('btn-fechar-menu-mobile');
             const sidebar = document.getElementById('sidebar-admin');
@@ -310,7 +298,6 @@
                 subtitulo.textContent = "Cadastre seus produtos e crie fotos/variações facilmente";
             }
 
-            // FECHAR MENU SE ESTIVER NO MOBILE
             const sidebar = document.getElementById('sidebar-admin');
             const overlayMob = document.getElementById('overlay-menu-mobile');
             if(sidebar) sidebar.classList.add('-translate-x-full');
@@ -379,6 +366,7 @@
             }
         }
 
+        // ALTERAÇÃO CRUCIAL: INSINUA A NOVA VARIAÇÃO NO INÍCIO DO CONTAINER (PREPEND)
         function adicionarCampoFoto(url = '', descricao = '') {
             const container = document.getElementById('container-fotos-dinamico');
             const div = document.createElement('div');
@@ -400,7 +388,8 @@
                 iniciarRecorte(this);
             });
 
-            container.appendChild(div);
+            // Adiciona no topo em vez do final
+            container.prepend(div);
         }
 
         function iniciarRecorte(input) {
@@ -537,7 +526,25 @@
 
             const container = document.getElementById('container-fotos-dinamico');
             container.innerHTML = '';
-            (p.variacoes || []).forEach(v => adicionarCampoFoto(v.foto, v.descricao));
+            // Preenche na ordem original
+            (p.variacoes || []).forEach(v => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
+                div.innerHTML = `
+                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg cursor-pointer">🗑️ Remover</button>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem</label>
+                        <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${v.foto}" placeholder="URL ou faça upload abaixo">
+                        <input type="file" accept="image/*" class="input-file-crop mt-1 w-full text-[10px] text-gray-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Variação / Descrição da Foto</label>
+                        <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${v.descricao || ''}" placeholder="Ex: Rosa, Tamanho Casal">
+                    </div>
+                `;
+                div.querySelector('.input-file-crop').addEventListener('change', function() { iniciarRecorte(this); });
+                container.appendChild(div);
+            });
             document.getElementById('form-container').classList.remove('hidden');
         }
 
