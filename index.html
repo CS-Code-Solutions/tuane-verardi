@@ -52,7 +52,7 @@
             </div>
         </header>
 
-        <!-- VITRINE COM CADA VARIAÇÃO EM UM CARD PRÓPRIO -->
+        <!-- VITRINE PÚBLICA -->
         <main class="max-w-6xl mx-auto p-3 md:p-6">
             <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"></div>
         </main>
@@ -69,6 +69,7 @@
                     <button id="btn-carrossel-prev" class="absolute left-2 bg-white/80 hover:bg-white p-2 rounded-full text-xs font-bold shadow text-gray-800">❮</button>
                     <button id="btn-carrossel-next" class="absolute right-2 bg-white/80 hover:bg-white p-2 rounded-full text-xs font-bold shadow text-gray-800">❯</button>
                     <span id="carrossel-contador" class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">1 / 1</span>
+                    <span id="modal-tarja-indisponivel" class="absolute inset-0 bg-black/50 text-white font-black text-sm flex items-center justify-center uppercase tracking-widest hidden">Esgotado / Indisponível</span>
                 </div>
 
                 <div id="modal-miniaturas" class="flex gap-2 overflow-x-auto pb-2"></div>
@@ -82,7 +83,7 @@
             </div>
 
             <div class="p-3 md:p-4 border-t border-rose-100 bg-rose-50/50 flex gap-2">
-                <button id="btn-continuar-comprando-modal" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">Continuar Comprando</button>
+                <button id="btn-continuar-comprando-modal" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">Voltar</button>
                 <button id="btn-add-carrinho" type="button" class="w-1/2 bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer">Adicionar ao Carrinho 🛒</button>
             </div>
         </div>
@@ -229,15 +230,24 @@
                     ? p.variacoes 
                     : [{ foto: 'https://via.placeholder.com/300', descricao: '' }];
 
+                const eIndisponivel = p.indisponivel === true || (p.quantidade !== undefined && p.quantidade <= 0);
+
                 variacoes.forEach((varItem, indexVar) => {
                     const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer";
+                    card.className = "bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer relative group";
                     
                     const descExibicao = varItem.descricao ? ` - ${varItem.descricao}` : '';
 
                     card.innerHTML = `
                         <div>
-                            <img src="${varItem.foto}" class="w-full h-36 md:h-48 object-cover">
+                            <div class="relative overflow-hidden aspect-square">
+                                <img src="${varItem.foto}" class="w-full h-full object-cover ${eIndisponivel ? 'grayscale opacity-75' : ''}">
+                                ${eIndisponivel ? `
+                                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                        <span class="bg-red-600 text-white font-extrabold text-[10px] md:text-xs px-2.5 py-1 rounded-md shadow uppercase tracking-wider">Indisponível</span>
+                                    </div>
+                                ` : ''}
+                            </div>
                             <div class="p-3 md:p-4">
                                 <span class="text-[9px] md:text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2 py-0.5 rounded-md inline-block mb-1">${p.categoria}</span>
                                 <h3 class="font-bold text-gray-800 text-xs md:text-sm mb-1 md:mb-2 line-clamp-2">${p.nome}${descExibicao}</h3>
@@ -255,9 +265,26 @@
             produtoSelecionado = prod;
             indiceFotoAtual = idxInicial;
 
+            const eIndisponivel = prod.indisponivel === true || (prod.quantidade !== undefined && prod.quantidade <= 0);
+
             document.getElementById('modal-categoria').textContent = prod.categoria;
             document.getElementById('modal-nome').textContent = prod.nome;
             document.getElementById('modal-valor').textContent = `R$ ${prod.valor.toFixed(2)}`;
+
+            const btnAdd = document.getElementById('btn-add-carrinho');
+            const tarja = document.getElementById('modal-tarja-indisponivel');
+
+            if (eIndisponivel) {
+                btnAdd.disabled = true;
+                btnAdd.className = "w-1/2 bg-gray-300 text-gray-500 font-bold py-3 rounded-xl text-xs cursor-not-allowed";
+                btnAdd.textContent = "Produto Indisponível";
+                tarja.classList.remove('hidden');
+            } else {
+                btnAdd.disabled = false;
+                btnAdd.className = "w-1/2 bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer";
+                btnAdd.textContent = "Adicionar ao Carrinho 🛒";
+                tarja.classList.add('hidden');
+            }
 
             atualizarCarrossel();
             document.getElementById('modal-produto').classList.remove('hidden');
@@ -273,7 +300,16 @@
                 : [{ foto: 'https://via.placeholder.com/400', descricao: '' }];
 
             const varAtual = variacoes[indiceFotoAtual];
-            document.getElementById('modal-img-destaque').src = varAtual.foto;
+            const eIndisponivel = produtoSelecionado.indisponivel === true || (produtoSelecionado.quantidade !== undefined && produtoSelecionado.quantidade <= 0);
+
+            const imgDestaque = document.getElementById('modal-img-destaque');
+            imgDestaque.src = varAtual.foto;
+            if (eIndisponivel) {
+                imgDestaque.classList.add('grayscale');
+            } else {
+                imgDestaque.classList.remove('grayscale');
+            }
+
             document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
             document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
 
@@ -282,7 +318,7 @@
             variacoes.forEach((v, idx) => {
                 const imgThumb = document.createElement('img');
                 imgThumb.src = v.foto;
-                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'}`;
+                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'} ${eIndisponivel ? 'grayscale' : ''}`;
                 imgThumb.addEventListener('click', () => {
                     indiceFotoAtual = idx;
                     atualizarCarrossel();
@@ -300,6 +336,9 @@
 
         function adicionarAoCarrinhoAtual() {
             if (!produtoSelecionado) return;
+            const eIndisponivel = produtoSelecionado.indisponivel === true || (produtoSelecionado.quantidade !== undefined && produtoSelecionado.quantidade <= 0);
+            if (eIndisponivel) return;
+
             const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '' };
 
             const itemExistente = carrinho.find(item => item.id === produtoSelecionado.id && item.variacaoDesc === variacaoAtual.descricao);
