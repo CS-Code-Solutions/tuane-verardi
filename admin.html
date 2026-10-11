@@ -69,14 +69,8 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
-        .login-footer p {
-            font-size: 11px;
-            color: #6B7280;
-        }
-        .login-footer a {
-            color: #f28c28;
-            text-decoration: none;
-        }
+        .login-footer p { font-size: 11px; color: #6B7280; }
+        .login-footer a { color: #f28c28; text-decoration: none; }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen">
@@ -97,7 +91,7 @@
 
     <!-- TELA DE LOGIN -->
     <div id="login-overlay">
-        <img id="bg-login-img" src="login.jpeg" alt="Fundo Tuane Verardi">
+        <img id="bg-login-img" src="fundo.jpg" alt="Fundo Tuane Verardi">
 
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
@@ -136,7 +130,10 @@
                 </div>
                 
                 <nav class="space-y-2">
-                    <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
+                    <button id="nav-pedidos" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
+                        📋 Pedidos Recebidos
+                    </button>
+                    <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
                         📦 Estoque & Produtos
                     </button>
                     <button id="nav-vitrine" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
@@ -161,15 +158,18 @@
             <div>
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 mb-4 md:mb-6 gap-3">
                     <div>
-                        <h2 id="titulo-secao" class="text-base md:text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
-                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Cadastre seus produtos e ajuste individualmente o estoque de cada variação</p>
+                        <h2 id="titulo-secao" class="text-base md:text-xl font-bold text-rose-gold">Pedidos Recebidos</h2>
+                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Acompanhe e gerencie as compras realizadas na sua loja</p>
                     </div>
-                    <button type="button" id="btn-abrir-novo" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer text-center">
+                    <button type="button" id="btn-abrir-novo" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer text-center hidden">
                         ➕ Novo Produto
                     </button>
                 </div>
 
-                <!-- FORMULÁRIO -->
+                <!-- SEÇÃO DE PEDIDOS (NOVA) -->
+                <div id="secao-pedidos-container" class="space-y-4"></div>
+
+                <!-- FORMULÁRIO DE PRODUTO -->
                 <div id="form-container" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-6">
                     <h3 class="text-base md:text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
                     <form id="produto-form" class="space-y-4 md:space-y-6">
@@ -213,7 +213,6 @@
                             </label>
                         </div>
 
-                        <!-- FOTOS E VARIAÇÕES -->
                         <div class="bg-rose-50/50 p-3 md:p-5 rounded-2xl border border-rose-200 space-y-4">
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                                 <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos, Variações e Estoque Individual</label>
@@ -230,7 +229,7 @@
                 </div>
 
                 <!-- LISTA DE PRODUTOS/VARIAÇÕES -->
-                <div id="container-lista-produtos" class="space-y-3"></div>
+                <div id="container-lista-produtos" class="space-y-3 hidden"></div>
             </div>
 
             <footer class="mt-8 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
@@ -242,10 +241,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script type="module">
         import { db, auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let listaProdutos = [];
-        let modoFiltroVitrine = false;
+        let listaPedidos = [];
+        let abaAtual = 'pedidos'; // 'pedidos', 'estoque', 'vitrine'
         let cropperInstance = null;
         let inputTargetGlobal = null;
 
@@ -259,8 +259,9 @@
             document.getElementById('btn-aplicar-recorte').addEventListener('click', aplicarRecorte);
             document.getElementById('produto-form').addEventListener('submit', salvarProduto);
 
-            document.getElementById('nav-estoque').addEventListener('click', () => alternarAba(false));
-            document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba(true));
+            document.getElementById('nav-pedidos').addEventListener('click', () => alternarAba('pedidos'));
+            document.getElementById('nav-estoque').addEventListener('click', () => alternarAba('estoque'));
+            document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba('vitrine'));
 
             const toggleInput = document.getElementById('prod-vitrine');
             const toggleBg = document.getElementById('toggle-bg');
@@ -296,31 +297,54 @@
             if(overlayMob) overlayMob.addEventListener('click', fecharMenuMobile);
         });
 
-        function alternarAba(soVitrine) {
-            modoFiltroVitrine = soVitrine;
+        function alternarAba(aba) {
+            abaAtual = aba;
+            const btnPedidos = document.getElementById('nav-pedidos');
             const btnEstoque = document.getElementById('nav-estoque');
             const btnVitrine = document.getElementById('nav-vitrine');
+            
             const titulo = document.getElementById('titulo-secao');
             const subtitulo = document.getElementById('subtitulo-secao');
+            const btnNovo = document.getElementById('btn-abrir-novo');
 
-            if (soVitrine) {
-                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
-                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
+            const containerPedidos = document.getElementById('secao-pedidos-container');
+            const containerProdutos = document.getElementById('container-lista-produtos');
+            fecharFormulario();
+
+            const estiloAtivo = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
+            const estiloInativo = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
+
+            btnPedidos.className = aba === 'pedidos' ? estiloAtivo : estiloInativo;
+            btnEstoque.className = aba === 'estoque' ? estiloAtivo : estiloInativo;
+            btnVitrine.className = aba === 'vitrine' ? estiloAtivo : estiloInativo;
+
+            if (aba === 'pedidos') {
+                titulo.textContent = "Pedidos Recebidos";
+                subtitulo.textContent = "Acompanhe e gerencie as compras realizadas na sua loja";
+                btnNovo.classList.add('hidden');
+                containerPedidos.classList.remove('hidden');
+                containerProdutos.classList.add('hidden');
+                carregarPedidos();
+            } else if (aba === 'vitrine') {
                 titulo.textContent = "Vitrine da Loja";
                 subtitulo.textContent = "Exibindo apenas os produtos ativados para aparecer no catálogo público";
+                btnNovo.classList.remove('hidden');
+                containerPedidos.classList.add('hidden');
+                containerProdutos.classList.remove('hidden');
+                renderizarProdutosAdmin();
             } else {
-                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
-                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
                 titulo.textContent = "Gestão de Estoque";
                 subtitulo.textContent = "Cadastre seus produtos e ajuste individualmente o estoque de cada variação";
+                btnNovo.classList.remove('hidden');
+                containerPedidos.classList.add('hidden');
+                containerProdutos.classList.remove('hidden');
+                renderizarProdutosAdmin();
             }
 
             const sidebar = document.getElementById('sidebar-admin');
             const overlayMob = document.getElementById('overlay-menu-mobile');
             if(sidebar) sidebar.classList.add('-translate-x-full');
             if(overlayMob) overlayMob.classList.add('hidden');
-
-            renderizarProdutosAdmin();
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -335,6 +359,7 @@
                     if (docSnap.exists()) {
                         loginOverlay.style.display = 'none';
                         adminWrapper.style.display = 'flex';
+                        carregarPedidos();
                         carregarProdutos();
                     } else {
                         alert(`Acesso não autorizado: O e-mail ${user.email} não tem permissão neste painel.`);
@@ -377,9 +402,110 @@
                 const snap = await getDocs(collection(db, "produtos"));
                 listaProdutos = [];
                 snap.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
-                renderizarProdutosAdmin();
+                if (abaAtual !== 'pedidos') renderizarProdutosAdmin();
             } catch (err) {
                 console.error("Erro ao carregar produtos:", err);
+            }
+        }
+
+        async function carregarPedidos() {
+            try {
+                const q = query(collection(db, "pedidos"), orderBy("dataCriacao", "desc"));
+                const snap = await getDocs(q);
+                listaPedidos = [];
+                snap.forEach(d => listaPedidos.push({ id: d.id, ...d.data() }));
+                renderizarPedidos();
+            } catch (err) {
+                console.error("Erro ao carregar pedidos:", err);
+            }
+        }
+
+        function renderizarPedidos() {
+            const container = document.getElementById('secao-pedidos-container');
+            container.innerHTML = '';
+
+            if (listaPedidos.length === 0) {
+                container.innerHTML = `<div class="bg-white p-8 text-center text-gray-400 text-xs rounded-2xl border border-rose-100">Nenhum pedido recebido ainda.</div>`;
+                return;
+            }
+
+            listaPedidos.forEach(ped => {
+                const cli = ped.cliente || {};
+                const dataFormatada = ped.dataCriacao?.toDate ? ped.dataCriacao.toDate().toLocaleString('pt-BR') : 'Data recente';
+                const statusStr = ped.status || 'Pendente';
+
+                let corBadgeStatus = 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                if (statusStr === 'Concluído') corBadgeStatus = 'bg-green-100 text-green-800 border-green-200';
+                if (statusStr === 'Cancelado') corBadgeStatus = 'bg-red-100 text-red-800 border-red-200';
+
+                let itensHTML = (ped.itens || []).map(i => `
+                    <div class="flex justify-between items-center text-xs py-1 border-b border-gray-100 last:border-b-0">
+                        <span><strong>${i.quantidade}x</strong> ${i.nome} ${i.variacaoDesc ? `(${i.variacaoDesc})` : ''}</span>
+                        <span class="font-bold text-gray-700">R$ ${(i.valor * i.quantidade).toFixed(2)}</span>
+                    </div>
+                `).join('');
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 md:p-6 rounded-2xl border border-rose-100 shadow-sm space-y-4";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-rose-100 pb-3">
+                        <div>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase">${dataFormatada}</span>
+                            <h3 class="text-sm md:text-base font-extrabold text-gray-800">👤 ${cli.nome || 'Cliente'}</h3>
+                            <p class="text-xs text-gray-500">📞 ${cli.telefone || 'Sem telefone'} | 📍 ${cli.endereco || 'Retirada'}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select class="select-status-pedido text-xs font-bold px-3 py-1.5 rounded-xl border ${corBadgeStatus}">
+                                <option value="Pendente" ${statusStr === 'Pendente' ? 'selected' : ''}>⏳ Pendente</option>
+                                <option value="Concluído" ${statusStr === 'Concluído' ? 'selected' : ''}>✅ Concluído / Pago</option>
+                                <option value="Cancelado" ${statusStr === 'Cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+                            </select>
+                            <button type="button" class="btn-excluir-pedido text-red-500 hover:bg-red-50 p-1.5 rounded-xl font-bold text-xs cursor-pointer">🗑️</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <p class="text-[11px] font-bold text-rose-gold uppercase">Itens do Pedido:</p>
+                        <div class="bg-rose-50/50 p-3 rounded-xl border border-rose-100 space-y-1">${itensHTML}</div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row md:items-center justify-between pt-2 border-t border-rose-100 gap-2">
+                        <div class="text-xs">
+                            <span class="font-bold text-gray-600">Forma de Pagamento:</span> 
+                            <span class="bg-gray-100 px-2 py-0.5 rounded font-extrabold text-rose-gold">${cli.pagamento || 'Pix'}</span>
+                            ${cli.obs ? `<p class="text-[11px] text-gray-500 mt-1">Obs: ${cli.obs}</p>` : ''}
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 font-bold">Total:</span>
+                            <span class="text-base font-black text-rose-gold ml-1">R$ ${(ped.valorTotal || 0).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+
+                card.querySelector('.select-status-pedido').addEventListener('change', (e) => atualizarStatusPedido(ped.id, e.target.value));
+                card.querySelector('.btn-excluir-pedido').addEventListener('click', () => excluirPedido(ped.id));
+
+                container.appendChild(card);
+            });
+        }
+
+        async function atualizarStatusPedido(id, novoStatus) {
+            try {
+                await updateDoc(doc(db, "pedidos", id), { status: novoStatus });
+                carregarPedidos();
+            } catch (err) {
+                console.error("Erro ao atualizar pedido:", err);
+            }
+        }
+
+        async function excluirPedido(id) {
+            if (confirm("Deseja apagar este pedido do histórico?")) {
+                try {
+                    await deleteDoc(doc(db, "pedidos", id));
+                    carregarPedidos();
+                } catch (err) {
+                    console.error("Erro ao excluir pedido:", err);
+                }
             }
         }
 
@@ -478,12 +604,11 @@
             }
         }
 
-        // RENDERIZAÇÃO INDIVIDUAL POR CADA VARIAÇÃO
         function renderizarProdutosAdmin() {
             const container = document.getElementById('container-lista-produtos');
             container.innerHTML = '';
             
-            const produtosFiltrados = modoFiltroVitrine 
+            const produtosFiltrados = abaAtual === 'vitrine' 
                 ? listaProdutos.filter(p => p.exibirVitrine !== false)
                 : listaProdutos;
 
@@ -518,15 +643,12 @@
                         </div>
 
                         <div class="flex flex-wrap items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
-                            
-                            <!-- BOTÃO DE AJUSTE RÁPIDO DE ESTOQUE DE QUANTIDADE -->
                             <div class="flex items-center bg-gray-100 p-1 rounded-xl gap-1">
                                 <button type="button" class="btn-qtd-menos w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">-</button>
                                 <span class="text-xs font-extrabold px-1 text-gray-700 min-w-[24px] text-center">${qtd}</span>
                                 <button type="button" class="btn-qtd-mais w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">+</button>
                             </div>
 
-                            <!-- BOTÃO TOGGLE INDISPONÍVEL / DISPONÍVEL -->
                             <button type="button" class="btn-toggle-indisponivel text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition ${eIndisponivel ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}">
                                 ${eIndisponivel ? '🚫 Indisponível' : '🟢 Disponível'}
                             </button>
@@ -562,7 +684,7 @@
                 await updateDoc(doc(db, "produtos", id), { variacoes: prod.variacoes });
                 renderizarProdutosAdmin();
             } catch (err) {
-                console.error("Erro ao atualizar estoque da variação:", err);
+                console.error("Erro ao atualizar estoque:", err);
             }
         }
 
@@ -576,7 +698,7 @@
                 await updateDoc(doc(db, "produtos", id), { variacoes: prod.variacoes });
                 renderizarProdutosAdmin();
             } catch (err) {
-                console.error("Erro ao alterar disponibilidade da variação:", err);
+                console.error("Erro ao alterar disponibilidade:", err);
             }
         }
 
