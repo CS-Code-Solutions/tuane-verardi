@@ -12,7 +12,7 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #FDF6F6;
-            background-image: url('fundo.jpeg');
+            background-image: url('fundo.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -67,7 +67,7 @@
     <!-- TELA DE LOGIN COM GOOGLE -->
     <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
-            <img src="cabe.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 w-auto object-contain">
+            <img src="logo.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 w-auto object-contain">
             <div>
                 <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
                 <p class="text-xs text-gray-500">Painel Administrativo de Gestão</p>
@@ -86,16 +86,27 @@
     <div id="admin-main-wrapper" class="contents hidden">
         <aside class="w-full md:w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen">
             <div class="space-y-6">
-                <img src="cabe.png" alt="Tuane Verardi" class="h-16 w-auto mx-auto object-contain">
+                <!-- LOGO DO MENU ATUALIZADO PARA logo.png -->
+                <img src="logo.png" alt="Tuane Verardi" class="h-20 w-auto mx-auto object-contain">
                 <nav class="space-y-2">
-                    <button type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left">
+                    <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
                         📦 Estoque & Produtos
+                    </button>
+                    <!-- NOVO ITEM DE MENU ABAIXO DO ESTOQUE -->
+                    <button id="nav-vitrine" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
+                        ✨ Vitrine da Loja
                     </button>
                 </nav>
             </div>
+            
             <div class="space-y-3">
-                <a href="index.html" class="block text-center w-full bg-white text-rose-gold border border-rose-gold font-bold py-2.5 rounded-xl text-xs hover:bg-rose-50 transition">Ver Vitrine ao Vivo ➔</a>
+                <a href="index.html" target="_blank" class="block text-center w-full bg-white text-rose-gold border border-rose-gold font-bold py-2.5 rounded-xl text-xs hover:bg-rose-50 transition">Ver Vitrine ao Vivo ➔</a>
                 <button type="button" id="btn-logout" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">Sair do Painel</button>
+                
+                <!-- ASSINATURA ADICIONADA ABAIXO DO BOTAO SAIR -->
+                <div class="pt-3 border-t border-rose-200/60 text-center login-footer">
+                    <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
+                </div>
             </div>
         </aside>
 
@@ -103,15 +114,15 @@
             <div>
                 <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-rose-100 mb-8 gap-4">
                     <div>
-                        <h2 class="text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
-                        <p class="text-gray-500 text-sm">Cadastre seus produtos e crie fotos/variações facilmente</p>
+                        <h2 id="titulo-secao" class="text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
+                        <p id="subtitulo-secao" class="text-gray-500 text-sm">Cadastre seus produtos e crie fotos/variações facilmente</p>
                     </div>
                     <button type="button" id="btn-abrir-novo" class="bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer">
                         ➕ Novo Produto
                     </button>
                 </div>
 
-                <!-- FORMULÁRIO -->
+                <!-- FORMULÁRIO DE CADASTRO/EDIÇÃO DE PRODUTO -->
                 <div id="form-container" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-8">
                     <h3 class="text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
                     <form id="produto-form" class="space-y-6">
@@ -140,6 +151,18 @@
                             </div>
                         </div>
 
+                        <!-- BOTAO SELECIONAVEL PARA DIRECIONAR PARA A VITRINE -->
+                        <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between">
+                            <div>
+                                <h4 class="text-xs font-bold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
+                                <p class="text-[11px] text-gray-500">Marque para permitir que este produto apareça na página pública de catálogo</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="prod-vitrine" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-gold"></div>
+                            </label>
+                        </div>
+
                         <!-- FOTOS E VARIAÇÕES -->
                         <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 space-y-4">
                             <div class="flex justify-between items-center">
@@ -164,6 +187,7 @@
                                 <th class="py-3">Produto</th>
                                 <th class="py-3">Categoria</th>
                                 <th class="py-3">Valor</th>
+                                <th class="py-3">Exibir na Vitrine</th>
                                 <th class="py-3 text-right">Ações</th>
                             </tr>
                         </thead>
@@ -172,7 +196,7 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ PÁGINA ADMIN -->
+            <!-- RODAPÉ PÁGINA ADMIN PRINCIPAL -->
             <footer class="mt-12 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
                 <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
             </footer>
@@ -185,6 +209,7 @@
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let listaProdutos = [];
+        let modoFiltroVitrine = false;
         let cropperInstance = null;
         let inputTargetGlobal = null;
 
@@ -197,7 +222,32 @@
             document.getElementById('btn-fechar-modal').addEventListener('click', fecharModalRecorte);
             document.getElementById('btn-aplicar-recorte').addEventListener('click', aplicarRecorte);
             document.getElementById('produto-form').addEventListener('submit', salvarProduto);
+
+            // NAVEGAÇÃO ENTRE ESTOQUE E VITRINE DA LOJA
+            document.getElementById('nav-estoque').addEventListener('click', () => alternarAba(false));
+            document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba(true));
         });
+
+        function alternarAba(soVitrine) {
+            modoFiltroVitrine = soVitrine;
+            const btnEstoque = document.getElementById('nav-estoque');
+            const btnVitrine = document.getElementById('nav-vitrine');
+            const titulo = document.getElementById('titulo-secao');
+            const subtitulo = document.getElementById('subtitulo-secao');
+
+            if (soVitrine) {
+                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
+                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
+                titulo.textContent = "Vitrine da Loja";
+                subtitulo.textContent = "Exibindo apenas os produtos ativados para aparecer no catálogo público";
+            } else {
+                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
+                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
+                titulo.textContent = "Gestão de Estoque";
+                subtitulo.textContent = "Cadastre seus produtos e crie fotos/variações facilmente";
+            }
+            renderizarTabela();
+        }
 
         onAuthStateChanged(auth, async (user) => {
             const loginOverlay = document.getElementById('login-overlay');
@@ -316,6 +366,7 @@
             const nome = document.getElementById('prod-nome').value;
             const categoria = document.getElementById('prod-categoria').value;
             const valor = parseFloat(document.getElementById('prod-valor').value);
+            const exibirVitrine = document.getElementById('prod-vitrine').checked;
 
             let variacoes = [];
             document.querySelectorAll('#container-fotos-dinamico > div').forEach(div => {
@@ -324,7 +375,7 @@
                 if (url) variacoes.push({ foto: url, descricao: desc });
             });
 
-            const data = { nome, categoria, valor, variacoes };
+            const data = { nome, categoria, valor, exibirVitrine, variacoes };
 
             try {
                 if (id) {
@@ -344,8 +395,19 @@
         function renderizarTabela() {
             const tbody = document.getElementById('tabela-produtos');
             tbody.innerHTML = '';
-            listaProdutos.forEach(p => {
+            
+            const produtosFiltrados = modoFiltroVitrine 
+                ? listaProdutos.filter(p => p.exibirVitrine !== false)
+                : listaProdutos;
+
+            if (produtosFiltrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-400 text-xs">Nenhum produto encontrado.</td></tr>`;
+                return;
+            }
+
+            produtosFiltrados.forEach(p => {
                 const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/50';
+                const estaNaVitrine = p.exibirVitrine !== false;
                 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-rose-50/30 transition";
@@ -356,6 +418,11 @@
                     </td>
                     <td class="py-3 uppercase text-xs font-bold text-gray-500">${p.categoria}</td>
                     <td class="py-3 font-bold text-rose-gold">R$ ${p.valor.toFixed(2)}</td>
+                    <td class="py-3">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${estaNaVitrine ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                            ${estaNaVitrine ? 'Sim' : 'Não'}
+                        </span>
+                    </td>
                     <td class="py-3 text-right space-x-2">
                         <button type="button" class="btn-editar text-rose-gold hover:underline font-bold text-xs cursor-pointer">Editar</button>
                         <button type="button" class="btn-excluir text-red-500 hover:underline font-bold text-xs cursor-pointer">Excluir</button>
@@ -372,6 +439,7 @@
         function abrirFormularioNovo() {
             document.getElementById('prod-id').value = '';
             document.getElementById('produto-form').reset();
+            document.getElementById('prod-vitrine').checked = true;
             document.getElementById('container-fotos-dinamico').innerHTML = '';
             adicionarCampoFoto();
             document.getElementById('form-container').classList.remove('hidden');
@@ -388,6 +456,8 @@
             document.getElementById('prod-nome').value = p.nome;
             document.getElementById('prod-categoria').value = p.categoria;
             document.getElementById('prod-valor').value = p.valor;
+            document.getElementById('prod-vitrine').checked = p.exibirVitrine !== false;
+            
             const container = document.getElementById('container-fotos-dinamico');
             container.innerHTML = '';
             (p.variacoes || []).forEach(v => adicionarCampoFoto(v.foto, v.descricao));
@@ -408,4 +478,3 @@
     </script>
 </body>
 </html>
-
