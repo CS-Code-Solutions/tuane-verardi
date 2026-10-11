@@ -18,11 +18,11 @@
 <body class="min-h-screen flex flex-col justify-between">
 
     <div>
-        <!-- CABEÇALHO -->
+        <!-- CABEÇALHO COM LOGO ATUALIZADO PARA logo.png -->
         <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
             <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <img src="cabe2.png" alt="Tuane Verardi Confecções" class="h-12 w-auto object-contain">
+                    <img src="logo.png" alt="Tuane Verardi Confecções" class="h-12 w-auto object-contain">
                 </div>
                 <a href="admin.html" class="text-xs font-bold text-rose-gold border border-rose-gold px-3 py-1.5 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
             </div>
@@ -63,7 +63,13 @@
             try {
                 const snap = await getDocs(collection(db, "produtos"));
                 todosProdutos = [];
-                snap.forEach(d => todosProdutos.push({ id: d.id, ...d.data() }));
+                snap.forEach(d => {
+                    const item = { id: d.id, ...d.data() };
+                    // FILTRA PARA EXIBIR APENAS PRODUTOS COM VITRINE ATIVA
+                    if (item.exibirVitrine !== false) {
+                        todosProdutos.push(item);
+                    }
+                });
                 renderizarProdutos(todosProdutos);
             } catch (err) {
                 console.error("Erro ao carregar vitrine:", err);
