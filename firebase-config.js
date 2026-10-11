@@ -3,12 +3,12 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCD-gZNaJT4qp4z6n82K5P7WHd3m-Otw",
+    apiKey: "AIzaSyDGg0sUc7uhq3L0o5rCSdw2VjT8N1VLKWc",
     authDomain: "tuane-verardi.firebaseapp.com",
     projectId: "tuane-verardi",
     storageBucket: "tuane-verardi.firebasestorage.app",
-    messagingSenderId: "100508031130",
-    appId: "1:100508031130:web:4b7b9b1ceff062d380c83a"
+    messagingSenderId: "350386051220",
+    appId: "1:350386051220:web:b5f90bbef6012b0bc8bc81"
 };
 
 const app = initializeApp(firebaseConfig);
