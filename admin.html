@@ -11,14 +11,10 @@
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-image: url('fundo.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
             margin: 0;
             padding: 0;
+            background-color: #FDF6F6;
+            min-height: 100vh;
         }
 
         .bg-rose-gold { background-color: #B87352; }
@@ -26,9 +22,44 @@
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
+        /* TELA DE LOGIN FIXA COM A IMAGEM DE FUNDO IGUAL AO PROJETO REFERÊNCIA */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            padding: 15px;
+            box-sizing: border-box;
+            background-image: url('fundo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Máscara suave apenas para contraste da caixa de login */
+        #login-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 1;
+            pointer-events: none;
+        }
+
         .box-led-rosegold {
-            border: 2px solid rgba(184, 115, 82, 0.4);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            position: relative;
+            z-index: 2;
+            border: 2px solid rgba(184, 115, 82, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .login-footer p {
@@ -57,9 +88,9 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN COM GOOGLE -->
-    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold shadow-2xl">
+    <!-- TELA DE LOGIN COM IMAGEM DE FUNDO -->
+    <div id="login-overlay">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
             <div>
                 <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
