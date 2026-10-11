@@ -12,7 +12,7 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #FDF6F6;
-            background-image: url('fundo.jpeg');
+            background-image: url('fundo.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -46,9 +46,18 @@
             color: #f28c28;
             text-decoration: none;
         }
+
+        /* ESTILO INTERRUPTOR TOGGLE PERSONALIZADO PARA VITRINE */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #B87352;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #B87352;
+        }
     </style>
 </head>
-<body class="text-gray-800 flex flex-col md:flex-row">
+<body class="text-gray-800 flex flex-col md:flex-row min-h-screen">
 
     <!-- MODAL DE RECORTE DE IMAGEM -->
     <div id="modal-recorte" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
@@ -66,8 +75,8 @@
 
     <!-- TELA DE LOGIN COM GOOGLE -->
     <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
-            <img src="logo.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 w-auto object-contain">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
+            <img src="logo.png" alt="Tuane Verardi Confecções" class="mx-auto h-20 md:h-24 w-auto object-contain">
             <div>
                 <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
                 <p class="text-xs text-gray-500">Painel Administrativo de Gestão</p>
@@ -84,9 +93,26 @@
 
     <!-- PAINEL PRINCIPAL -->
     <div id="admin-main-wrapper" class="contents hidden">
-        <aside class="w-full md:w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen">
+        
+        <!-- CABEÇALHO MOBILE COM MENU HAMBÚRGUER -->
+        <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-4 flex justify-between items-center sticky top-0 z-40">
+            <div class="flex items-center gap-2">
+                <img src="logo.png" alt="Logo" class="h-10 w-auto">
+                <span class="font-extrabold text-sm text-rose-gold">Painel Gestor</span>
+            </div>
+            <button id="btn-toggle-menu-mobile" class="p-2 text-rose-gold font-extrabold text-2xl focus:outline-none">
+                ☰
+            </button>
+        </header>
+
+        <!-- MENU LATERAL RESPONSIVO (GAVETA NO MOBILE) -->
+        <aside id="sidebar-admin" class="fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen transition-transform transform -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="space-y-6">
-                <img src="logo.png" alt="Tuane Verardi" class="h-20 w-auto mx-auto object-contain">
+                <div class="flex justify-between items-center md:block">
+                    <img src="logo.png" alt="Tuane Verardi" class="h-20 w-auto mx-auto object-contain">
+                    <button id="btn-fechar-menu-mobile" class="md:hidden text-gray-500 font-bold text-xl">✕</button>
+                </div>
+                
                 <nav class="space-y-2">
                     <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
                         📦 Estoque & Produtos
@@ -107,25 +133,28 @@
             </div>
         </aside>
 
-        <main class="flex-1 p-6 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm">
+        <!-- MÁSCARA ESCURA PARA FECHAR MENU MOBILE AO CLICAR FORA -->
+        <div id="overlay-menu-mobile" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+        <main class="flex-1 p-4 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm w-full overflow-x-hidden">
             <div>
-                <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-rose-100 mb-8 gap-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-rose-100 mb-6 gap-4">
                     <div>
-                        <h2 id="titulo-secao" class="text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
-                        <p id="subtitulo-secao" class="text-gray-500 text-sm">Cadastre seus produtos e crie fotos/variações facilmente</p>
+                        <h2 id="titulo-secao" class="text-lg md:text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
+                        <p id="subtitulo-secao" class="text-gray-500 text-xs md:text-sm">Cadastre seus produtos e crie fotos/variações facilmente</p>
                     </div>
-                    <button type="button" id="btn-abrir-novo" class="bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer">
+                    <button type="button" id="btn-abrir-novo" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer text-center">
                         ➕ Novo Produto
                     </button>
                 </div>
 
                 <!-- FORMULÁRIO -->
-                <div id="form-container" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-8">
-                    <h3 class="text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
+                <div id="form-container" class="hidden bg-white p-5 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-8">
+                    <h3 class="text-base md:text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
                     <form id="produto-form" class="space-y-6">
                         <input type="hidden" id="prod-id">
                         
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nome do Produto</label>
                                 <input type="text" id="prod-nome" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-rose-gold">
@@ -148,42 +177,47 @@
                             </div>
                         </div>
 
-                        <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between">
+                        <!-- AJUSTE NO BOTAO TOGGLE DE EXIBIR NA VITRINE -->
+                        <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between gap-3">
                             <div>
-                                <h4 class="text-xs font-bold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
-                                <p class="text-[11px] text-gray-500">Marque para permitir que este produto apareça na página pública de catálogo</p>
+                                <h4 class="text-xs font-extrabold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
+                                <p class="text-[10px] md:text-[11px] text-gray-500">Marque para disponibilizar este produto na vitrine pública</p>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="prod-vitrine" class="sr-only peer" checked>
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-gold"></div>
+                            
+                            <label for="prod-vitrine" class="flex items-center cursor-pointer select-none">
+                                <div class="relative">
+                                    <input type="checkbox" id="prod-vitrine" class="sr-only" checked>
+                                    <div class="block bg-gray-300 w-12 h-7 rounded-full transition-colors duration-300 bg-rose-gold" id="toggle-bg"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-5" id="toggle-dot"></div>
+                                </div>
                             </label>
                         </div>
 
                         <!-- FOTOS E VARIAÇÕES -->
-                        <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 space-y-4">
-                            <div class="flex justify-between items-center">
+                        <div class="bg-rose-50/50 p-4 md:p-5 rounded-2xl border border-rose-200 space-y-4">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                                 <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos e Variações do Produto</label>
-                                <button type="button" id="btn-add-foto" class="bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
+                                <button type="button" id="btn-add-foto" class="w-full sm:w-auto bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
                             </div>
                             <div id="container-fotos-dinamico" class="space-y-4"></div>
                         </div>
 
-                        <div class="flex gap-3 pt-4 border-t">
-                            <button type="submit" class="bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-8 py-3 rounded-xl text-sm shadow cursor-pointer">Salvar Produto</button>
-                            <button type="button" id="btn-cancelar-form" class="bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-sm cursor-pointer">Cancelar</button>
+                        <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                            <button type="submit" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-8 py-3 rounded-xl text-sm shadow cursor-pointer">Salvar Produto</button>
+                            <button type="button" id="btn-cancelar-form" class="w-full sm:w-auto bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-sm cursor-pointer">Cancelar</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- TABELA DE PRODUTOS -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-rose-100">
-                    <table class="w-full text-left">
+                <!-- TABELA COM SCROLL HORIZONTAL MOBILE -->
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 overflow-x-auto">
+                    <table class="w-full text-left min-w-[500px]">
                         <thead>
                             <tr class="border-b text-xs font-bold text-gray-400 uppercase">
                                 <th class="py-3">Produto</th>
                                 <th class="py-3">Categoria</th>
                                 <th class="py-3">Valor</th>
-                                <th class="py-3">Exibir na Vitrine</th>
+                                <th class="py-3">Na Vitrine</th>
                                 <th class="py-3 text-right">Ações</th>
                             </tr>
                         </thead>
@@ -192,8 +226,7 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ PÁGINA ADMIN -->
-            <footer class="mt-12 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
+            <footer class="mt-8 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
                 <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
             </footer>
         </main>
@@ -221,6 +254,41 @@
 
             document.getElementById('nav-estoque').addEventListener('click', () => alternarAba(false));
             document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba(true));
+
+            // CONTROLE DO TOGGLE PERSONALIZADO
+            const toggleInput = document.getElementById('prod-vitrine');
+            const toggleBg = document.getElementById('toggle-bg');
+            const toggleDot = document.getElementById('toggle-dot');
+
+            toggleInput.addEventListener('change', () => {
+                if (toggleInput.checked) {
+                    toggleBg.className = 'block bg-rose-gold w-12 h-7 rounded-full transition-colors duration-300';
+                    toggleDot.className = 'dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-5';
+                } else {
+                    toggleBg.className = 'block bg-gray-300 w-12 h-7 rounded-full transition-colors duration-300';
+                    toggleDot.className = 'dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-0';
+                }
+            });
+
+            // NAVEGAÇÃO MOBILE
+            const btnMenuMob = document.getElementById('btn-toggle-menu-mobile');
+            const btnFecharMob = document.getElementById('btn-fechar-menu-mobile');
+            const sidebar = document.getElementById('sidebar-admin');
+            const overlayMob = document.getElementById('overlay-menu-mobile');
+
+            function abrirMenuMobile() {
+                sidebar.classList.remove('-translate-x-full');
+                overlayMob.classList.remove('hidden');
+            }
+
+            function fecharMenuMobile() {
+                sidebar.classList.add('-translate-x-full');
+                overlayMob.classList.add('hidden');
+            }
+
+            if(btnMenuMob) btnMenuMob.addEventListener('click', abrirMenuMobile);
+            if(btnFecharMob) btnFecharMob.addEventListener('click', fecharMenuMobile);
+            if(overlayMob) overlayMob.addEventListener('click', fecharMenuMobile);
         });
 
         function alternarAba(soVitrine) {
@@ -241,6 +309,13 @@
                 titulo.textContent = "Gestão de Estoque";
                 subtitulo.textContent = "Cadastre seus produtos e crie fotos/variações facilmente";
             }
+
+            // FECHAR MENU SE ESTIVER NO MOBILE
+            const sidebar = document.getElementById('sidebar-admin');
+            const overlayMob = document.getElementById('overlay-menu-mobile');
+            if(sidebar) sidebar.classList.add('-translate-x-full');
+            if(overlayMob) overlayMob.classList.add('hidden');
+
             renderizarTabela();
         }
 
@@ -265,7 +340,7 @@
                     }
                 } catch (error) {
                     console.error("Erro ao verificar credenciais:", error);
-                    alert("Aviso do Firebase: Verifique as regras do Firestore ou os Authorized Domains.");
+                    alert("Aviso do Firebase: Verifique as regras de segurança.");
                     await signOut(auth);
                     loginOverlay.classList.remove('hidden');
                     adminWrapper.classList.add('hidden');
@@ -409,10 +484,10 @@
                 tr.innerHTML = `
                     <td class="py-3 flex items-center gap-3">
                         <img src="${capa}" class="w-10 h-10 object-cover rounded-lg border border-rose-200">
-                        <span class="font-bold text-gray-800">${p.nome}</span>
+                        <span class="font-bold text-gray-800 text-xs md:text-sm">${p.nome}</span>
                     </td>
-                    <td class="py-3 uppercase text-xs font-bold text-gray-500">${p.categoria}</td>
-                    <td class="py-3 font-bold text-rose-gold">R$ ${p.valor.toFixed(2)}</td>
+                    <td class="py-3 uppercase text-[11px] font-bold text-gray-500">${p.categoria}</td>
+                    <td class="py-3 font-bold text-rose-gold text-xs md:text-sm">R$ ${p.valor.toFixed(2)}</td>
                     <td class="py-3">
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${estaNaVitrine ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
                             ${estaNaVitrine ? 'Sim' : 'Não'}
@@ -434,7 +509,11 @@
         function abrirFormularioNovo() {
             document.getElementById('prod-id').value = '';
             document.getElementById('produto-form').reset();
-            document.getElementById('prod-vitrine').checked = true;
+            
+            const toggleInput = document.getElementById('prod-vitrine');
+            toggleInput.checked = true;
+            toggleInput.dispatchEvent(new Event('change'));
+
             document.getElementById('container-fotos-dinamico').innerHTML = '';
             adicionarCampoFoto();
             document.getElementById('form-container').classList.remove('hidden');
@@ -451,8 +530,11 @@
             document.getElementById('prod-nome').value = p.nome;
             document.getElementById('prod-categoria').value = p.categoria;
             document.getElementById('prod-valor').value = p.valor;
-            document.getElementById('prod-vitrine').checked = p.exibirVitrine !== false;
             
+            const toggleInput = document.getElementById('prod-vitrine');
+            toggleInput.checked = p.exibirVitrine !== false;
+            toggleInput.dispatchEvent(new Event('change'));
+
             const container = document.getElementById('container-fotos-dinamico');
             container.innerHTML = '';
             (p.variacoes || []).forEach(v => adicionarCampoFoto(v.foto, v.descricao));
