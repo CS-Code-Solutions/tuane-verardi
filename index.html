@@ -60,10 +60,14 @@
         let todosProdutos = [];
 
         async function carregarVitrine() {
-            const snap = await getDocs(collection(db, "produtos"));
-            todosProdutos = [];
-            snap.forEach(d => todosProdutos.push({ id: d.id, ...d.data() }));
-            renderizarProdutos(todosProdutos);
+            try {
+                const snap = await getDocs(collection(db, "produtos"));
+                todosProdutos = [];
+                snap.forEach(d => todosProdutos.push({ id: d.id, ...d.data() }));
+                renderizarProdutos(todosProdutos);
+            } catch (err) {
+                console.error("Erro ao carregar vitrine:", err);
+            }
         }
 
         window.filtrarCategoria = function(cat) {
