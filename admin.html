@@ -14,6 +14,27 @@
         .bg-rose-gold-dark { background-color: #8C4E33; }
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
+
+        /* Fundo customizado da Tela de Login */
+        .login-bg {
+            background-image: url('fundo.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Efeito LED Rose Gold suave na Caixa de Login ao passar o mouse / toque */
+        .box-led-rosegold {
+            border: 2px solid rgba(184, 115, 82, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease-in-out;
+        }
+        .box-led-rosegold:hover, 
+        .box-led-rosegold:active, 
+        .box-led-rosegold:focus-within {
+            border-color: #B87352;
+            box-shadow: 0 0 20px rgba(184, 115, 82, 0.6), 0 0 35px rgba(184, 115, 82, 0.3);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body class="text-gray-800 flex flex-col md:flex-row min-h-screen">
@@ -32,10 +53,10 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN COM GOOGLE -->
-    <div id="login-overlay" class="fixed inset-0 z-50 bg-rose-950/80 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center space-y-6 border border-rose-200">
-            <img src="logo.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 w-auto object-contain">
+    <!-- TELA DE LOGIN COM GOOGLE (FUNDO E LED ROSE GOLD) -->
+    <div id="login-overlay" class="fixed inset-0 z-50 login-bg flex items-center justify-center p-4">
+        <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
+            <img src="cabe.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 w-auto object-contain">
             <div>
                 <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
                 <p class="text-xs text-gray-500">Painel Administrativo de Gestão</p>
@@ -51,7 +72,7 @@
     <div id="admin-main-wrapper" class="contents hidden">
         <aside class="w-full md:w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between">
             <div class="space-y-6">
-                <img src="logo.png" alt="Tuane Verardi" class="h-16 w-auto mx-auto object-contain">
+                <img src="cabe.png" alt="Tuane Verardi" class="h-16 w-auto mx-auto object-contain">
                 <nav class="space-y-2">
                     <button onclick="mudarAba('estoque')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left">
                         📦 Estoque & Produtos
