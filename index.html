@@ -20,21 +20,22 @@
 <body class="min-h-screen flex flex-col justify-between">
 
     <div>
-        <!-- CABEÇALHO RESPONSIVO -->
+        <!-- CABEÇALHO RESPONSIVO COM LOGO cabe2.png COM MAIOR VISIBILIDADE -->
         <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
-            <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <img src="cabe2.png" alt="Tuane Verardi Confecções" class="h-10 md:h-12 w-auto object-contain cursor-pointer" onclick="location.reload()">
+            <div class="max-w-6xl mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <!-- LOGO AMPLIADA PARA cabe2.png -->
+                    <img src="cabe2.png" alt="Tuane Verardi Confecções" class="h-16 md:h-20 w-auto object-contain cursor-pointer transition-transform hover:scale-105" onclick="location.reload()">
                 </div>
                 
                 <div class="flex items-center gap-2 md:gap-3">
                     <!-- ÍCONE DO CARRINHO -->
-                    <button id="btn-abrir-carrinho" type="button" class="relative bg-rose-0 p-2 md:p-2.5 rounded-xl border border-rose-200 hover:bg-rose-100 transition cursor-pointer">
-                        <span class="text-lg md:text-xl">🛒</span>
+                    <button id="btn-abrir-carrinho" type="button" class="relative bg-rose-50 p-2.5 md:p-3 rounded-xl border border-rose-200 hover:bg-rose-100 transition cursor-pointer">
+                        <span class="text-xl md:text-2xl">🛒</span>
                         <span id="badge-carrinho" class="absolute -top-1.5 -right-1.5 bg-rose-gold text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
                     </button>
                     
-                    <a href="admin.html" class="text-[11px] md:text-xs font-bold text-rose-gold border border-rose-gold px-2.5 py-2 md:px-3 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
+                    <a href="admin.html" class="text-xs md:text-sm font-bold text-rose-gold border border-rose-gold px-3 py-2 md:px-4 md:py-2.5 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
                 </div>
             </div>
             
@@ -59,13 +60,12 @@
         </main>
     </div>
 
-    <!-- MODAL DE DETALHES DO PRODUTO / CARROSSEL MOBILE -->
+    <!-- MODAL DE DETALHES DO PRODUTO / CARROSSEL -->
     <div id="modal-produto" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
             <button id="btn-fechar-modal-prod" class="absolute top-3 right-3 z-10 bg-black/50 text-white w-8 h-8 rounded-full font-bold hover:bg-black transition">✕</button>
             
             <div class="overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4">
-                <!-- CARROSSEL -->
                 <div class="relative bg-gray-100 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
                     <img id="modal-img-destaque" src="" class="w-full h-full object-cover">
                     <button id="btn-carrossel-prev" class="absolute left-2 bg-white/80 hover:bg-white p-2 rounded-full text-xs font-bold shadow text-gray-800">❮</button>
@@ -73,7 +73,6 @@
                     <span id="carrossel-contador" class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">1 / 1</span>
                 </div>
 
-                <!-- MINIATURAS DAS VARIAÇÕES -->
                 <div id="modal-miniaturas" class="flex gap-2 overflow-x-auto pb-2"></div>
 
                 <div>
@@ -95,7 +94,6 @@
     <div id="modal-carrinho" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
             
-            <!-- ETAPA 1: ITENS DO CARRINHO -->
             <div id="etapa-carrinho-itens" class="p-4 md:p-6 flex flex-col h-full space-y-4">
                 <div class="flex justify-between items-center border-b pb-3 border-rose-100">
                     <h3 class="text-base md:text-lg font-extrabold text-rose-gold">🛒 Meu Carrinho</h3>
@@ -117,7 +115,6 @@
                 </div>
             </div>
 
-            <!-- ETAPA 2: DADOS DO CLIENTE E FINALIZAÇÃO -->
             <div id="etapa-carrinho-dados" class="p-4 md:p-6 flex flex-col h-full space-y-4 hidden">
                 <div class="flex justify-between items-center border-b pb-3 border-rose-100">
                     <h3 class="text-base md:text-lg font-extrabold text-rose-gold">📋 Dados para Entrega</h3>
