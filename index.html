@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuane Verardi Confecções | Catálogo Online</title>
+    <link rel="icon" type="image/png" href="ico.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDF6F6; }
+        .text-rose-gold { color: #B87352; }
+        .bg-rose-gold { background-color: #B87352; }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="Tuane Verardi Confecções" class="h-12 w-auto object-contain">
+            </div>
+            <a href="admin.html" class="text-xs font-bold text-rose-gold border border-rose-gold px-3 py-1.5 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
+        </div>
+        
+        <!-- SUB-MENU COM AS CATEGORIAS -->
+        <div class="bg-[#F8E3E3] border-t border-rose-200 overflow-x-auto">
+            <div class="max-w-6xl mx-auto flex gap-2 p-2 text-xs font-bold whitespace-nowrap">
+                <button onclick="filtrarCategoria('todos')" class="btn-cat px-4 py-2 rounded-xl bg-rose-gold text-white shadow-sm">Todos</button>
+                <button onclick="filtrarCategoria('cobertores')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Cobertores</button>
+                <button onclick="filtrarCategoria('coberdron')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Coberdron</button>
+                <button onclick="filtrarCategoria('lencois')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Lençóis</button>
+                <button onclick="filtrarCategoria('toalhas')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Toalhas</button>
+                <button onclick="filtrarCategoria('lingeries')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Lingeries</button>
+                <button onclick="filtrarCategoria('eletrodomesticos')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Eletrodomésticos</button>
+                <button onclick="filtrarCategoria('outros')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Outros</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- VITRINE -->
+    <main class="max-w-6xl mx-auto p-4 md:p-6">
+        <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </main>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        let todosProdutos = [];
+
+        async function carregarVitrine() {
+            const snap = await getDocs(collection(db, "produtos"));
+            todosProdutos = [];
+            snap.forEach(d => todosProdutos.push({ id: d.id, ...d.data() }));
+            renderizarProdutos(todosProdutos);
+        }
+
+        window.filtrarCategoria = function(cat) {
+            if (cat === 'todos') {
+                renderizarProdutos(todosProdutos);
+            } else {
+                renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
+            }
+        };
+
+        function renderizarProdutos(lista) {
+            const container = document.getElementById('grid-produtos');
+            container.innerHTML = '';
+            if (lista.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-400 py-12">Nenhum produto cadastrado nesta categoria.</p>';
+                return;
+            }
+            lista.forEach(p => {
+                const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/300';
+                container.innerHTML += `
+                    <div class="bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <img src="${capa}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <span class="text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2 py-0.5 rounded-md inline-block mb-1">${p.categoria}</span>
+                                <h3 class="font-bold text-gray-800 text-sm mb-2">${p.nome}</h3>
+                                <p class="text-rose-gold font-extrabold text-base">R$ ${p.valor.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        carregarVitrine();
+    </script>
+</body>
+</html>
