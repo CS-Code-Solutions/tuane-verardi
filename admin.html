@@ -478,7 +478,6 @@
             }
         }
 
-        // RENDERIZAÇÃO INDIVIDUAL POR CADA VARIAÇÃO
         function renderizarProdutosAdmin() {
             const container = document.getElementById('container-lista-produtos');
             container.innerHTML = '';
@@ -498,7 +497,7 @@
                     : [{ foto: 'https://via.placeholder.com/50', descricao: '', quantidade: p.quantidade || 0, indisponivel: p.indisponivel || false }];
 
                 variacoes.forEach((v, indexVar) => {
-                    const eIndisponivel = v.indisponivel === true || (v.quantidade !== undefined && v.quantidade <= 0);
+                    const eIndisponivel = v.indisponivel === true || (v.quantidade !== undefined && Number(v.quantidade) <= 0);
                     const qtd = v.quantidade !== undefined ? v.quantidade : 0;
                     const descExibicao = v.descricao ? ` - ${v.descricao}` : '';
 
@@ -554,13 +553,13 @@
             if (!prod || !prod.variacoes || !prod.variacoes[indexVar]) return;
 
             const variacao = prod.variacoes[indexVar];
-            const novaQtd = Math.max(0, (variacao.quantidade || 0) + delta);
+            const novaQtd = Math.max(0, (Number(variacao.quantidade) || 0) + delta);
             variacao.quantidade = novaQtd;
             variacao.indisponivel = novaQtd <= 0;
 
             try {
                 await updateDoc(doc(db, "produtos", id), { variacoes: prod.variacoes });
-                renderizarProdutosAdmin();
+                await carregarProdutos();
             } catch (err) {
                 console.error("Erro ao atualizar estoque da variação:", err);
             }
@@ -574,7 +573,7 @@
 
             try {
                 await updateDoc(doc(db, "produtos", id), { variacoes: prod.variacoes });
-                renderizarProdutosAdmin();
+                await carregarProdutos();
             } catch (err) {
                 console.error("Erro ao alterar disponibilidade da variação:", err);
             }
