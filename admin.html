@@ -12,7 +12,7 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #FDF6F6;
-            background-image: url('fundo.jpg');
+            background-image: url('fundo.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -86,13 +86,11 @@
     <div id="admin-main-wrapper" class="contents hidden">
         <aside class="w-full md:w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen">
             <div class="space-y-6">
-                <!-- LOGO DO MENU ATUALIZADO PARA logo.png -->
                 <img src="logo.png" alt="Tuane Verardi" class="h-20 w-auto mx-auto object-contain">
                 <nav class="space-y-2">
                     <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
                         📦 Estoque & Produtos
                     </button>
-                    <!-- NOVO ITEM DE MENU ABAIXO DO ESTOQUE -->
                     <button id="nav-vitrine" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
                         ✨ Vitrine da Loja
                     </button>
@@ -103,7 +101,6 @@
                 <a href="index.html" target="_blank" class="block text-center w-full bg-white text-rose-gold border border-rose-gold font-bold py-2.5 rounded-xl text-xs hover:bg-rose-50 transition">Ver Vitrine ao Vivo ➔</a>
                 <button type="button" id="btn-logout" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">Sair do Painel</button>
                 
-                <!-- ASSINATURA ADICIONADA ABAIXO DO BOTAO SAIR -->
                 <div class="pt-3 border-t border-rose-200/60 text-center login-footer">
                     <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
                 </div>
@@ -122,7 +119,7 @@
                     </button>
                 </div>
 
-                <!-- FORMULÁRIO DE CADASTRO/EDIÇÃO DE PRODUTO -->
+                <!-- FORMULÁRIO -->
                 <div id="form-container" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-8">
                     <h3 class="text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
                     <form id="produto-form" class="space-y-6">
@@ -151,7 +148,6 @@
                             </div>
                         </div>
 
-                        <!-- BOTAO SELECIONAVEL PARA DIRECIONAR PARA A VITRINE -->
                         <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between">
                             <div>
                                 <h4 class="text-xs font-bold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
@@ -196,7 +192,7 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ PÁGINA ADMIN PRINCIPAL -->
+            <!-- RODAPÉ PÁGINA ADMIN -->
             <footer class="mt-12 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
                 <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
             </footer>
@@ -223,7 +219,6 @@
             document.getElementById('btn-aplicar-recorte').addEventListener('click', aplicarRecorte);
             document.getElementById('produto-form').addEventListener('submit', salvarProduto);
 
-            // NAVEGAÇÃO ENTRE ESTOQUE E VITRINE DA LOJA
             document.getElementById('nav-estoque').addEventListener('click', () => alternarAba(false));
             document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba(true));
         });
@@ -270,7 +265,7 @@
                     }
                 } catch (error) {
                     console.error("Erro ao verificar credenciais:", error);
-                    alert("Aviso do Firebase: Verifique as regras do Firestore ou se adicionou cs-code-solutions.github.io nos Authorized Domains do Firebase Authentication.");
+                    alert("Aviso do Firebase: Verifique as regras do Firestore ou os Authorized Domains.");
                     await signOut(auth);
                     loginOverlay.classList.remove('hidden');
                     adminWrapper.classList.add('hidden');
