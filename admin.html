@@ -22,7 +22,6 @@
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
-        /* TELA DE LOGIN FIXA COM A IMAGEM DE FUNDO IGUAL AO PROJETO REFERÊNCIA */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -42,7 +41,6 @@
             background-repeat: no-repeat;
         }
 
-        /* Máscara suave apenas para contraste da caixa de login */
         #login-overlay::after {
             content: '';
             position: absolute;
@@ -88,7 +86,7 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN COM IMAGEM DE FUNDO -->
+    <!-- TELA DE LOGIN -->
     <div id="login-overlay">
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
@@ -109,7 +107,6 @@
     <!-- PAINEL PRINCIPAL -->
     <div id="admin-main-wrapper" class="contents hidden">
         
-        <!-- CABEÇALHO MOBILE -->
         <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-3 flex justify-between items-center sticky top-0 z-40">
             <div class="flex items-center gap-2">
                 <img src="cabe2.png" alt="Logo" class="h-12 w-auto">
@@ -120,7 +117,6 @@
             </button>
         </header>
 
-        <!-- MENU LATERAL RESPONSIVO -->
         <aside id="sidebar-admin" class="fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen transition-transform transform -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="space-y-6">
                 <div class="flex justify-between items-center md:block">
@@ -150,32 +146,32 @@
 
         <div id="overlay-menu-mobile" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
 
-        <main class="flex-1 p-4 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm w-full overflow-x-hidden">
+        <main class="flex-1 p-3 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm w-full overflow-x-hidden">
             <div>
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-rose-100 mb-6 gap-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 mb-4 md:mb-6 gap-3">
                     <div>
-                        <h2 id="titulo-secao" class="text-lg md:text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
-                        <p id="subtitulo-secao" class="text-gray-500 text-xs md:text-sm">Cadastre seus produtos e crie fotos/variações facilmente</p>
+                        <h2 id="titulo-secao" class="text-base md:text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
+                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Cadastre seus produtos, estoque e variações com facilidade</p>
                     </div>
                     <button type="button" id="btn-abrir-novo" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer text-center">
                         ➕ Novo Produto
                     </button>
                 </div>
 
-                <!-- FORMULÁRIO -->
-                <div id="form-container" class="hidden bg-white p-5 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-8">
+                <!-- FORMULÁRIO COMPLETO COM ESTOQUE -->
+                <div id="form-container" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-6">
                     <h3 class="text-base md:text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
-                    <form id="produto-form" class="space-y-6">
+                    <form id="produto-form" class="space-y-4 md:space-y-6">
                         <input type="hidden" id="prod-id">
                         
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nome do Produto</label>
-                                <input type="text" id="prod-nome" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-rose-gold">
+                                <input type="text" id="prod-nome" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Categoria</label>
-                                <select id="prod-categoria" class="w-full px-4 py-2.5 border rounded-xl text-sm bg-white focus:outline-none focus:border-rose-gold">
+                                <select id="prod-categoria" class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm bg-white focus:outline-none focus:border-rose-gold">
                                     <option value="cobertores">Cobertores</option>
                                     <option value="coberdron">Coberdron</option>
                                     <option value="lencois">Lençóis</option>
@@ -187,14 +183,18 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Valor (R$)</label>
-                                <input type="number" step="0.01" id="prod-valor" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-rose-gold">
+                                <input type="number" step="0.01" id="prod-valor" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Qtd em Estoque</label>
+                                <input type="number" id="prod-qtd" min="0" value="10" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
                             </div>
                         </div>
 
-                        <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between gap-3">
+                        <div class="bg-rose-50 p-3 md:p-4 rounded-xl border border-rose-200 flex items-center justify-between gap-3">
                             <div>
                                 <h4 class="text-xs font-extrabold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
-                                <p class="text-[10px] md:text-[11px] text-gray-500">Marque para disponibilizar este produto na vitrine pública</p>
+                                <p class="text-[10px] md:text-[11px] text-gray-500">Marque para disponibilizar este produto no catálogo</p>
                             </div>
                             
                             <label for="prod-vitrine" class="flex items-center cursor-pointer select-none">
@@ -207,7 +207,7 @@
                         </div>
 
                         <!-- FOTOS E VARIAÇÕES -->
-                        <div class="bg-rose-50/50 p-4 md:p-5 rounded-2xl border border-rose-200 space-y-4">
+                        <div class="bg-rose-50/50 p-3 md:p-5 rounded-2xl border border-rose-200 space-y-4">
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                                 <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos e Variações do Produto</label>
                                 <button type="button" id="btn-add-foto" class="w-full sm:w-auto bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
@@ -216,27 +216,14 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                            <button type="submit" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-8 py-3 rounded-xl text-sm shadow cursor-pointer">Salvar Produto</button>
-                            <button type="button" id="btn-cancelar-form" class="w-full sm:w-auto bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-sm cursor-pointer">Cancelar</button>
+                            <button type="submit" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-8 py-3 rounded-xl text-xs md:text-sm shadow cursor-pointer">Salvar Produto</button>
+                            <button type="button" id="btn-cancelar-form" class="w-full sm:w-auto bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-xs md:text-sm cursor-pointer">Cancelar</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- TABELA DE PRODUTOS -->
-                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 overflow-x-auto">
-                    <table class="w-full text-left min-w-[500px]">
-                        <thead>
-                            <tr class="border-b text-xs font-bold text-gray-400 uppercase">
-                                <th class="py-3">Produto</th>
-                                <th class="py-3">Categoria</th>
-                                <th class="py-3">Valor</th>
-                                <th class="py-3">Na Vitrine</th>
-                                <th class="py-3 text-right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-produtos" class="divide-y text-sm"></tbody>
-                    </table>
-                </div>
+                <!-- LISTA DE PRODUTOS RESPONSIVA (CARDS NO MOBILE / TABELA NO DESKTOP) -->
+                <div id="container-lista-produtos" class="space-y-3"></div>
             </div>
 
             <footer class="mt-8 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
@@ -318,7 +305,7 @@
                 btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
                 btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
                 titulo.textContent = "Gestão de Estoque";
-                subtitulo.textContent = "Cadastre seus produtos e crie fotos/variações facilmente";
+                subtitulo.textContent = "Cadastre seus produtos, estoque e variações facilmente";
             }
 
             const sidebar = document.getElementById('sidebar-admin');
@@ -326,7 +313,7 @@
             if(sidebar) sidebar.classList.add('-translate-x-full');
             if(overlayMob) overlayMob.classList.add('hidden');
 
-            renderizarTabela();
+            renderizarProdutosAdmin();
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -383,7 +370,7 @@
                 const snap = await getDocs(collection(db, "produtos"));
                 listaProdutos = [];
                 snap.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
-                renderizarTabela();
+                renderizarProdutosAdmin();
             } catch (err) {
                 console.error("Erro ao carregar produtos:", err);
             }
@@ -446,6 +433,7 @@
             const nome = document.getElementById('prod-nome').value;
             const categoria = document.getElementById('prod-categoria').value;
             const valor = parseFloat(document.getElementById('prod-valor').value);
+            const quantidade = parseInt(document.getElementById('prod-qtd').value) || 0;
             const exibirVitrine = document.getElementById('prod-vitrine').checked;
 
             let variacoes = [];
@@ -455,7 +443,15 @@
                 if (url) variacoes.push({ foto: url, descricao: desc });
             });
 
-            const data = { nome, categoria, valor, exibirVitrine, variacoes };
+            const data = { 
+                nome, 
+                categoria, 
+                valor, 
+                quantidade, 
+                indisponivel: quantidade <= 0,
+                exibirVitrine, 
+                variacoes 
+            };
 
             try {
                 if (id) {
@@ -472,53 +468,107 @@
             }
         }
 
-        function renderizarTabela() {
-            const tbody = document.getElementById('tabela-produtos');
-            tbody.innerHTML = '';
+        // RENDERIZAÇÃO RESPONSIVA CONFORTEVEL PARA CELULAR E DESKTOP
+        function renderizarProdutosAdmin() {
+            const container = document.getElementById('container-lista-produtos');
+            container.innerHTML = '';
             
             const produtosFiltrados = modoFiltroVitrine 
                 ? listaProdutos.filter(p => p.exibirVitrine !== false)
                 : listaProdutos;
 
             if (produtosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-400 text-xs">Nenhum produto encontrado.</td></tr>`;
+                container.innerHTML = `<div class="bg-white p-8 text-center text-gray-400 text-xs rounded-2xl border border-rose-100">Nenhum produto encontrado.</div>`;
                 return;
             }
 
             produtosFiltrados.forEach(p => {
                 const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/50';
-                const estaNaVitrine = p.exibirVitrine !== false;
-                
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-rose-50/30 transition";
-                tr.innerHTML = `
-                    <td class="py-3 flex items-center gap-3">
-                        <img src="${capa}" class="w-10 h-10 object-cover rounded-lg border border-rose-200">
-                        <span class="font-bold text-gray-800 text-xs md:text-sm">${p.nome}</span>
-                    </td>
-                    <td class="py-3 uppercase text-[11px] font-bold text-gray-500">${p.categoria}</td>
-                    <td class="py-3 font-bold text-rose-gold text-xs md:text-sm">R$ ${p.valor.toFixed(2)}</td>
-                    <td class="py-3">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${estaNaVitrine ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
-                            ${estaNaVitrine ? 'Sim' : 'Não'}
-                        </span>
-                    </td>
-                    <td class="py-3 text-right space-x-2">
-                        <button type="button" class="btn-editar text-rose-gold hover:underline font-bold text-xs cursor-pointer">Editar</button>
-                        <button type="button" class="btn-excluir text-red-500 hover:underline font-bold text-xs cursor-pointer">Excluir</button>
-                    </td>
+                const eIndisponivel = p.indisponivel === true || (p.quantidade !== undefined && p.quantidade <= 0);
+                const qtd = p.quantidade !== undefined ? p.quantidade : 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-3 md:p-4 rounded-2xl border border-rose-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3 transition hover:shadow-md";
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <img src="${capa}" class="w-12 h-12 md:w-14 md:h-14 object-cover rounded-xl border border-rose-200">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-extrabold text-gray-800 text-xs md:text-sm truncate">${p.nome}</h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase bg-gray-100 px-2 py-0.5 rounded">${p.categoria}</span>
+                                <span class="text-rose-gold font-bold text-xs md:text-sm">R$ ${p.valor.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
+                        
+                        <!-- BOTÃO DE AJUSTE RÁPIDO DE ESTOQUE DE QUANTIDADE -->
+                        <div class="flex items-center bg-gray-100 p-1 rounded-xl gap-1">
+                            <button type="button" class="btn-qtd-menos w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">-</button>
+                            <span class="text-xs font-extrabold px-1 text-gray-700 min-w-[24px] text-center">${qtd}</span>
+                            <button type="button" class="btn-qtd-mais w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">+</button>
+                        </div>
+
+                        <!-- BOTÃO TOGGLE INDISPONÍVEL / DISPONÍVEL -->
+                        <button type="button" class="btn-toggle-indisponivel text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition ${eIndisponivel ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}">
+                            ${eIndisponivel ? '🚫 Indisponível' : '🟢 Disponível'}
+                        </button>
+
+                        <div class="flex items-center gap-2">
+                            <button type="button" class="btn-editar bg-rose-50 text-rose-gold border border-rose-200 px-3 py-1.5 rounded-xl font-bold text-xs hover:bg-rose-100 cursor-pointer">Editar</button>
+                            <button type="button" class="btn-excluir text-red-500 hover:bg-red-50 p-1.5 rounded-xl font-bold text-xs cursor-pointer">🗑️</button>
+                        </div>
+                    </div>
                 `;
 
-                tr.querySelector('.btn-editar').addEventListener('click', () => editarProduto(p.id));
-                tr.querySelector('.btn-excluir').addEventListener('click', () => removerProduto(p.id));
+                card.querySelector('.btn-qtd-menos').addEventListener('click', () => alterarEstoqueRapido(p.id, -1));
+                card.querySelector('.btn-qtd-mais').addEventListener('click', () => alterarEstoqueRapido(p.id, 1));
+                card.querySelector('.btn-toggle-indisponivel').addEventListener('click', () => alternarStatusIndisponivel(p.id, !eIndisponivel));
+                card.querySelector('.btn-editar').addEventListener('click', () => editarProduto(p.id));
+                card.querySelector('.btn-excluir').addEventListener('click', () => removerProduto(p.id));
 
-                tbody.appendChild(tr);
+                container.appendChild(card);
             });
+        }
+
+        async function alterarEstoqueRapido(id, delta) {
+            const prod = listaProdutos.find(p => p.id === id);
+            if (!prod) return;
+            const novaQtd = Math.max(0, (prod.quantidade || 0) + delta);
+            const estaIndisponivel = novaQtd <= 0;
+
+            try {
+                await updateDoc(doc(db, "produtos", id), {
+                    quantidade: novaQtd,
+                    indisponivel: estaIndisponivel
+                });
+                prod.quantidade = novaQtd;
+                prod.indisponivel = estaIndisponivel;
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error("Erro ao atualizar estoque:", err);
+            }
+        }
+
+        async function alternarStatusIndisponivel(id, novoStatus) {
+            try {
+                await updateDoc(doc(db, "produtos", id), {
+                    indisponivel: novoStatus
+                });
+                const prod = listaProdutos.find(p => p.id === id);
+                if (prod) prod.indisponivel = novoStatus;
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error("Erro ao alterar disponibilidade:", err);
+            }
         }
 
         function abrirFormularioNovo() {
             document.getElementById('prod-id').value = '';
             document.getElementById('produto-form').reset();
+            document.getElementById('prod-qtd').value = 10;
             
             const toggleInput = document.getElementById('prod-vitrine');
             toggleInput.checked = true;
@@ -527,6 +577,7 @@
             document.getElementById('container-fotos-dinamico').innerHTML = '';
             adicionarCampoFoto();
             document.getElementById('form-container').classList.remove('hidden');
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth' });
         }
 
         function fecharFormulario() {
@@ -540,6 +591,7 @@
             document.getElementById('prod-nome').value = p.nome;
             document.getElementById('prod-categoria').value = p.categoria;
             document.getElementById('prod-valor').value = p.valor;
+            document.getElementById('prod-qtd').value = p.quantidade !== undefined ? p.quantidade : 10;
             
             const toggleInput = document.getElementById('prod-vitrine');
             toggleInput.checked = p.exibirVitrine !== false;
@@ -566,6 +618,7 @@
                 container.appendChild(div);
             });
             document.getElementById('form-container').classList.remove('hidden');
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function removerProduto(id) {
