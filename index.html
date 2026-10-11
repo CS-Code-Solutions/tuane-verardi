@@ -20,51 +20,51 @@
 <body class="min-h-screen flex flex-col justify-between">
 
     <div>
-        <!-- CABEÇALHO -->
+        <!-- CABEÇALHO RESPONSIVO -->
         <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
             <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <img src="cabe2.png" alt="Tuane Verardi Confecções" class="h-12 w-auto object-contain cursor-pointer" onclick="location.reload()">
+                    <img src="cabe2.png" alt="Tuane Verardi Confecções" class="h-10 md:h-12 w-auto object-contain cursor-pointer" onclick="location.reload()">
                 </div>
                 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 md:gap-3">
                     <!-- ÍCONE DO CARRINHO -->
-                    <button id="btn-abrir-carrinho" type="button" class="relative bg-rose-50 p-2.5 rounded-xl border border-rose-200 hover:bg-rose-100 transition cursor-pointer">
-                        <span class="text-xl">🛒</span>
+                    <button id="btn-abrir-carrinho" type="button" class="relative bg-rose-0 p-2 md:p-2.5 rounded-xl border border-rose-200 hover:bg-rose-100 transition cursor-pointer">
+                        <span class="text-lg md:text-xl">🛒</span>
                         <span id="badge-carrinho" class="absolute -top-1.5 -right-1.5 bg-rose-gold text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
                     </button>
                     
-                    <a href="admin.html" class="text-xs font-bold text-rose-gold border border-rose-gold px-3 py-2 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
+                    <a href="admin.html" class="text-[11px] md:text-xs font-bold text-rose-gold border border-rose-gold px-2.5 py-2 md:px-3 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
                 </div>
             </div>
             
-            <!-- SUB-MENU COM AS CATEGORIAS -->
-            <div class="bg-[#F8E3E3] border-t border-rose-200 overflow-x-auto">
-                <div class="max-w-6xl mx-auto flex gap-2 p-2 text-xs font-bold whitespace-nowrap">
-                    <button onclick="filtrarCategoria('todos')" class="btn-cat px-4 py-2 rounded-xl bg-rose-gold text-white shadow-sm cursor-pointer">Todos</button>
-                    <button onclick="filtrarCategoria('cobertores')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Cobertores</button>
-                    <button onclick="filtrarCategoria('coberdron')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Coberdron</button>
-                    <button onclick="filtrarCategoria('lencois')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Lençóis</button>
-                    <button onclick="filtrarCategoria('toalhas')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Toalhas</button>
-                    <button onclick="filtrarCategoria('lingeries')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Lingeries</button>
-                    <button onclick="filtrarCategoria('eletrodomesticos')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Eletrodomésticos</button>
-                    <button onclick="filtrarCategoria('outros')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Outros</button>
+            <!-- BARRA DE CATEGORIAS DESLIZANTE -->
+            <div class="bg-[#F8E3E3] border-t border-rose-200 overflow-x-auto no-scrollbar">
+                <div class="max-w-6xl mx-auto flex gap-1.5 p-2 text-[11px] md:text-xs font-bold whitespace-nowrap">
+                    <button onclick="filtrarCategoria('todos')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl bg-rose-gold text-white shadow-sm cursor-pointer">Todos</button>
+                    <button onclick="filtrarCategoria('cobertores')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Cobertores</button>
+                    <button onclick="filtrarCategoria('coberdron')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Coberdron</button>
+                    <button onclick="filtrarCategoria('lencois')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Lençóis</button>
+                    <button onclick="filtrarCategoria('toalhas')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Toalhas</button>
+                    <button onclick="filtrarCategoria('lingeries')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Lingeries</button>
+                    <button onclick="filtrarCategoria('eletrodomesticos')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Eletrodomésticos</button>
+                    <button onclick="filtrarCategoria('outros')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Outros</button>
                 </div>
             </div>
         </header>
 
         <!-- VITRINE -->
-        <main class="max-w-6xl mx-auto p-4 md:p-6">
-            <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        <main class="max-w-6xl mx-auto p-3 md:p-6">
+            <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"></div>
         </main>
     </div>
 
-    <!-- MODAL DE DETALHES DO PRODUTO / CARROSSEL -->
-    <div id="modal-produto" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[90vh]">
+    <!-- MODAL DE DETALHES DO PRODUTO / CARROSSEL MOBILE -->
+    <div id="modal-produto" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
             <button id="btn-fechar-modal-prod" class="absolute top-3 right-3 z-10 bg-black/50 text-white w-8 h-8 rounded-full font-bold hover:bg-black transition">✕</button>
             
-            <div class="overflow-y-auto p-6 space-y-4">
+            <div class="overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4">
                 <!-- CARROSSEL -->
                 <div class="relative bg-gray-100 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
                     <img id="modal-img-destaque" src="" class="w-full h-full object-cover">
@@ -78,13 +78,13 @@
 
                 <div>
                     <span id="modal-categoria" class="text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2.5 py-1 rounded-md inline-block mb-1"></span>
-                    <h2 id="modal-nome" class="text-lg font-extrabold text-gray-800"></h2>
+                    <h2 id="modal-nome" class="text-base md:text-lg font-extrabold text-gray-800"></h2>
                     <p id="modal-variacao-desc" class="text-xs text-gray-500 font-medium min-h-[16px] mt-1"></p>
-                    <p id="modal-valor" class="text-xl font-black text-rose-gold mt-2"></p>
+                    <p id="modal-valor" class="text-lg md:text-xl font-black text-rose-gold mt-1 md:mt-2"></p>
                 </div>
             </div>
 
-            <div class="p-4 border-t border-rose-100 bg-rose-50/50 flex gap-2">
+            <div class="p-3 md:p-4 border-t border-rose-100 bg-rose-50/50 flex gap-2">
                 <button id="btn-continuar-comprando-modal" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">Continuar Comprando</button>
                 <button id="btn-add-carrinho" type="button" class="w-1/2 bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer">Adicionar ao Carrinho 🛒</button>
             </div>
@@ -92,22 +92,22 @@
     </div>
 
     <!-- MODAL FLUTUANTE DO CARRINHO / CHECKOUT -->
-    <div id="modal-carrinho" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[90vh]">
+    <div id="modal-carrinho" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
             
             <!-- ETAPA 1: ITENS DO CARRINHO -->
-            <div id="etapa-carrinho-itens" class="p-6 flex flex-col h-full space-y-4">
+            <div id="etapa-carrinho-itens" class="p-4 md:p-6 flex flex-col h-full space-y-4">
                 <div class="flex justify-between items-center border-b pb-3 border-rose-100">
-                    <h3 class="text-lg font-extrabold text-rose-gold">🛒 Meu Carrinho</h3>
+                    <h3 class="text-base md:text-lg font-extrabold text-rose-gold">🛒 Meu Carrinho</h3>
                     <button id="btn-fechar-carrinho" class="text-gray-400 hover:text-gray-600 font-bold">✕</button>
                 </div>
 
                 <div id="container-itens-carrinho" class="overflow-y-auto max-h-[50vh] divide-y divide-rose-100 space-y-2 pr-1"></div>
 
                 <div class="border-t border-rose-100 pt-3 space-y-3">
-                    <div class="flex justify-between items-center font-extrabold text-base">
+                    <div class="flex justify-between items-center font-extrabold text-sm md:text-base">
                         <span class="text-gray-700">Valor Total:</span>
-                        <span id="carrinho-total-valor" class="text-rose-gold text-lg">R$ 0,00</span>
+                        <span id="carrinho-total-valor" class="text-rose-gold text-base md:text-lg">R$ 0,00</span>
                     </div>
 
                     <div class="flex gap-2">
@@ -118,9 +118,9 @@
             </div>
 
             <!-- ETAPA 2: DADOS DO CLIENTE E FINALIZAÇÃO -->
-            <div id="etapa-carrinho-dados" class="p-6 flex flex-col h-full space-y-4 hidden">
+            <div id="etapa-carrinho-dados" class="p-4 md:p-6 flex flex-col h-full space-y-4 hidden">
                 <div class="flex justify-between items-center border-b pb-3 border-rose-100">
-                    <h3 class="text-lg font-extrabold text-rose-gold">📋 Dados para Entrega</h3>
+                    <h3 class="text-base md:text-lg font-extrabold text-rose-gold">📋 Dados para Entrega</h3>
                     <button id="btn-fechar-carrinho-2" class="text-gray-400 hover:text-gray-600 font-bold">✕</button>
                 </div>
 
@@ -175,13 +175,11 @@
         let produtoSelecionado = null;
         let indiceFotoAtual = 0;
         
-        // GERENCIAMENTO DO CARRINHO (PERSISTÊNCIA VIA LOCALSTORAGE)
         let carrinho = JSON.parse(localStorage.getItem('tuane_carrinho')) || [];
 
         document.addEventListener('DOMContentLoaded', () => {
             atualizarBadgeCarrinho();
 
-            // EVENTOS DE NAVEGAÇÃO DOS MODAIS
             document.getElementById('btn-abrir-carrinho').addEventListener('click', abrirCarrinho);
             document.getElementById('btn-fechar-carrinho').addEventListener('click', fecharCarrinho);
             document.getElementById('btn-fechar-carrinho-2').addEventListener('click', fecharCarrinho);
@@ -227,7 +225,7 @@
             const container = document.getElementById('grid-produtos');
             container.innerHTML = '';
             if (lista.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center text-gray-400 py-12">Nenhum produto cadastrado nesta categoria.</p>';
+                container.innerHTML = '<p class="col-span-full text-center text-gray-400 py-12 text-xs md:text-sm">Nenhum produto cadastrado nesta categoria.</p>';
                 return;
             }
             lista.forEach(p => {
@@ -236,11 +234,11 @@
                 card.className = "bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer";
                 card.innerHTML = `
                     <div>
-                        <img src="${capa}" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <span class="text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2 py-0.5 rounded-md inline-block mb-1">${p.categoria}</span>
-                            <h3 class="font-bold text-gray-800 text-sm mb-2 line-clamp-1">${p.nome}</h3>
-                            <p class="text-rose-gold font-extrabold text-base">R$ ${p.valor.toFixed(2)}</p>
+                        <img src="${capa}" class="w-full h-36 md:h-48 object-cover">
+                        <div class="p-3 md:p-4">
+                            <span class="text-[9px] md:text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2 py-0.5 rounded-md inline-block mb-1">${p.categoria}</span>
+                            <h3 class="font-bold text-gray-800 text-xs md:text-sm mb-1 md:mb-2 line-clamp-1">${p.nome}</h3>
+                            <p class="text-rose-gold font-extrabold text-sm md:text-base">R$ ${p.valor.toFixed(2)}</p>
                         </div>
                     </div>
                 `;
@@ -249,7 +247,6 @@
             });
         }
 
-        // --- LÓGICA DO MODAL DE DETALHES E CARROSSEL ---
         function abrirModalProduto(prod) {
             produtoSelecionado = prod;
             indiceFotoAtual = 0;
@@ -276,13 +273,12 @@
             document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
             document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
 
-            // MINIATURAS
             const minCont = document.getElementById('modal-miniaturas');
             minCont.innerHTML = '';
             variacoes.forEach((v, idx) => {
                 const imgThumb = document.createElement('img');
                 imgThumb.src = v.foto;
-                imgThumb.className = `w-12 h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'}`;
+                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'}`;
                 imgThumb.addEventListener('click', () => {
                     indiceFotoAtual = idx;
                     atualizarCarrossel();
@@ -298,7 +294,6 @@
             atualizarCarrossel();
         }
 
-        // --- LÓGICA DO CARRINHO DE COMPRAS ---
         function adicionarAoCarrinhoAtual() {
             if (!produtoSelecionado) return;
             const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '' };
@@ -367,20 +362,20 @@
                 valorTotal += subtotal;
 
                 const div = document.createElement('div');
-                div.className = "py-3 flex items-center justify-between gap-3";
+                div.className = "py-3 flex items-center justify-between gap-2 md:gap-3";
                 div.innerHTML = `
-                    <img src="${item.foto || 'https://via.placeholder.com/50'}" class="w-12 h-12 object-cover rounded-lg border border-rose-100">
+                    <img src="${item.foto || 'https://via.placeholder.com/50'}" class="w-10 h-10 md:w-12 md:h-12 object-cover rounded-lg border border-rose-100">
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-gray-800 text-xs truncate">${item.nome}</h4>
                         ${item.variacaoDesc ? `<p class="text-[10px] text-gray-500">Var: ${item.variacaoDesc}</p>` : ''}
                         <p class="text-rose-gold font-bold text-xs">R$ ${item.valor.toFixed(2)}</p>
                     </div>
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-1">
                         <button class="btn-qtd-menos text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-md font-bold">-</button>
                         <span class="text-xs font-bold w-4 text-center">${item.quantidade}</span>
                         <button class="btn-qtd-mais text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-md font-bold">+</button>
                     </div>
-                    <button class="btn-remover-item text-red-500 text-xs ml-1 hover:text-red-700 font-bold">🗑️</button>
+                    <button class="btn-remover-item text-red-500 text-xs hover:text-red-700 font-bold ml-1">🗑️</button>
                 `;
 
                 div.querySelector('.btn-qtd-menos').addEventListener('click', () => alterarQuantidade(index, -1));
@@ -422,7 +417,6 @@
             document.getElementById('etapa-carrinho-itens').classList.remove('hidden');
         }
 
-        // --- ENVIO DO PEDIDO PARA O WHATSAPP (5551991935081) ---
         function finalizarCompraWhatsApp(e) {
             e.preventDefault();
 
@@ -457,7 +451,6 @@
             const numeroWhatsApp = "5551991935081";
             const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensagem)}`;
 
-            // LIMPAR CARRINHO APÓS ENVIO
             carrinho = [];
             salvarCarrinho();
             fecharCarrinho();
