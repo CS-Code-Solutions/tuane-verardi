@@ -178,97 +178,127 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script type="module">
-        import { db, auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+   <script type="module">
+    import { db, auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from './firebase-config.js';
+    import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        let listaProdutos = [];
-        let cropperInstance = null;
-        let inputTargetGlobal = null;
+    let listaProdutos = [];
+    let cropperInstance = null;
+    let inputTargetGlobal = null;
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('admin-main-wrapper').classList.remove('hidden');
-                carregarProdutos();
-            } else {
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('admin-main-wrapper').classList.add('hidden');
+    // Monitora o estado de autenticação
+    onAuthStateChanged(auth, async (user) => {
+        const loginOverlay = document.getElementById('login-overlay');
+        const adminWrapper = document.getElementById('admin-main-wrapper');
+
+        if (user) {
+            // Verificar se o e-mail do usuário está na coleção de autorizados no Firestore
+            try {
+                const docRef = doc(db, "usuarios_autorizados", user.email);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    // Usuário autorizado! Permite acesso ao painel
+                    loginOverlay.classList.add('hidden');
+                    adminWrapper.classList.remove('hidden');
+                    carregarProdutos();
+                } else {
+                    // Usuário NÃO autorizado
+                    alert(`O e-mail ${user.email} não possui autorização para acessar este painel.`);
+                    await signOut(auth);
+                    loginOverlay.classList.remove('hidden');
+                    adminWrapper.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error("Erro ao verificar credenciais:", error);
+                alert("Acesso negado ou erro ao validar permissões.");
+                await signOut(auth);
+                loginOverlay.classList.remove('hidden');
+                adminWrapper.classList.add('hidden');
             }
-        });
+        } else {
+            loginOverlay.classList.remove('hidden');
+            adminWrapper.classList.add('hidden');
+        }
+    });
 
-        window.fazerLoginGoogle = () => signInWithPopup(auth, googleProvider);
-        window.fazerLogout = () => signOut(auth);
+    window.fazerLoginGoogle = () => signInWithPopup(auth, googleProvider);
+    window.fazerLogout = () => signOut(auth);
 
-        async function carregarProdutos() {
+    async function carregarProdutos() {
+        try {
             const snap = await getDocs(collection(db, "produtos"));
             listaProdutos = [];
             snap.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
             renderizarTabela();
+        } catch (err) {
+            console.error("Erro ao carregar produtos:", err);
         }
+    }
 
-        window.adicionarCampoFoto = function(url = '', descricao = '') {
-            const container = document.getElementById('container-fotos-dinamico');
-            const div = document.createElement('div');
-            div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
-            div.innerHTML = `
-                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg">🗑️ Remover</button>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem</label>
-                    <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${url}" placeholder="URL ou faça upload abaixo">
-                    <input type="file" accept="image/*" onchange="iniciarRecorte(this)" class="mt-1 w-full text-[10px] text-gray-400">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Variação / Descrição da Foto</label>
-                    <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${descricao}" placeholder="Ex: Rosa, Tamanho Casal">
-                </div>
-            `;
-            container.appendChild(div);
-        }
+    window.adicionarCampoFoto = function(url = '', descricao = '') {
+        const container = document.getElementById('container-fotos-dinamico');
+        const div = document.createElement('div');
+        div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
+        div.innerHTML = `
+            <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg">🗑️ Remover</button>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem</label>
+                <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${url}" placeholder="URL ou faça upload abaixo">
+                <input type="file" accept="image/*" onchange="iniciarRecorte(this)" class="mt-1 w-full text-[10px] text-gray-400">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Variação / Descrição da Foto</label>
+                <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${descricao}" placeholder="Ex: Rosa, Tamanho Casal">
+            </div>
+        `;
+        container.appendChild(div);
+    }
 
-        window.iniciarRecorte = function(input) {
-            const file = input.files[0];
-            if (!file) return;
-            inputTargetGlobal = input.parentElement.querySelector('.input-foto-url');
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('imagem-para-recortar');
-                img.src = e.target.result;
-                document.getElementById('modal-recorte').classList.remove('hidden');
-                if (cropperInstance) cropperInstance.destroy();
-                cropperInstance = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
-            };
-            reader.readAsDataURL(file);
+    window.iniciarRecorte = function(input) {
+        const file = input.files[0];
+        if (!file) return;
+        inputTargetGlobal = input.parentElement.querySelector('.input-foto-url');
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById('imagem-para-recortar');
+            img.src = e.target.result;
+            document.getElementById('modal-recorte').classList.remove('hidden');
+            if (cropperInstance) cropperInstance.destroy();
+            cropperInstance = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
         };
+        reader.readAsDataURL(file);
+    };
 
-        window.aplicarRecorte = function() {
-            if (!cropperInstance || !inputTargetGlobal) return;
-            const canvas = cropperInstance.getCroppedCanvas({ width: 800, height: 800 });
-            inputTargetGlobal.value = canvas.toDataURL('image/jpeg', 0.85);
-            fecharModalRecorte();
-        };
+    window.aplicarRecorte = function() {
+        if (!cropperInstance || !inputTargetGlobal) return;
+        const canvas = cropperInstance.getCroppedCanvas({ width: 800, height: 800 });
+        inputTargetGlobal.value = canvas.toDataURL('image/jpeg', 0.85);
+        fecharModalRecorte();
+    };
 
-        window.fecharModalRecorte = function() {
-            document.getElementById('modal-recorte').classList.add('hidden');
-            if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
-        };
+    window.fecharModalRecorte = function() {
+        document.getElementById('modal-recorte').classList.add('hidden');
+        if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+    };
 
-        window.salvarProduto = async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('prod-id').value;
-            const nome = document.getElementById('prod-nome').value;
-            const categoria = document.getElementById('prod-categoria').value;
-            const valor = parseFloat(document.getElementById('prod-valor').value);
+    window.salvarProduto = async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('prod-id').value;
+        const nome = document.getElementById('prod-nome').value;
+        const categoria = document.getElementById('prod-categoria').value;
+        const valor = parseFloat(document.getElementById('prod-valor').value);
 
-            let variacoes = [];
-            document.querySelectorAll('#container-fotos-dinamico > div').forEach(div => {
-                const url = div.querySelector('.input-foto-url').value;
-                const desc = div.querySelector('.input-foto-desc').value;
-                if (url) variacoes.push({ foto: url, descricao: desc });
-            });
+        let variacoes = [];
+        document.querySelectorAll('#container-fotos-dinamico > div').forEach(div => {
+            const url = div.querySelector('.input-foto-url').value;
+            const desc = div.querySelector('.input-foto-desc').value;
+            if (url) variacoes.push({ foto: url, descricao: desc });
+        });
 
-            const data = { nome, categoria, valor, variacoes };
+        const data = { nome, categoria, valor, variacoes };
 
+        try {
             if (id) {
                 await updateDoc(doc(db, "produtos", id), data);
             } else {
@@ -277,61 +307,70 @@
 
             fecharFormulario();
             carregarProdutos();
-        };
-
-        function renderizarTabela() {
-            const tbody = document.getElementById('tabela-produtos');
-            tbody.innerHTML = '';
-            listaProdutos.forEach(p => {
-                const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/50';
-                tbody.innerHTML += `
-                    <tr class="hover:bg-rose-50/30 transition">
-                        <td class="py-3 flex items-center gap-3">
-                            <img src="${capa}" class="w-10 h-10 object-cover rounded-lg border border-rose-200">
-                            <span class="font-bold text-gray-800">${p.nome}</span>
-                        </td>
-                        <td class="py-3 uppercase text-xs font-bold text-gray-500">${p.categoria}</td>
-                        <td class="py-3 font-bold text-rose-gold">R$ ${p.valor.toFixed(2)}</td>
-                        <td class="py-3 text-right space-x-2">
-                            <button onclick="editarProduto('${p.id}')" class="text-rose-gold hover:underline font-bold text-xs">Editar</button>
-                            <button onclick="removerProduto('${p.id}')" class="text-red-500 hover:underline font-bold text-xs">Excluir</button>
-                        </td>
-                    </tr>
-                `;
-            });
+        } catch (err) {
+            alert("Erro ao salvar produto: Você pode não ter permissão.");
+            console.error(err);
         }
+    };
 
-        window.abrirFormularioNovo = function() {
-            document.getElementById('prod-id').value = '';
-            document.getElementById('produto-form').reset();
-            document.getElementById('container-fotos-dinamico').innerHTML = '';
-            adicionarCampoFoto();
-            document.getElementById('form-container').classList.remove('hidden');
-        };
+    function renderizarTabela() {
+        const tbody = document.getElementById('tabela-produtos');
+        tbody.innerHTML = '';
+        listaProdutos.forEach(p => {
+            const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/50';
+            tbody.innerHTML += `
+                <tr class="hover:bg-rose-50/30 transition">
+                    <td class="py-3 flex items-center gap-3">
+                        <img src="${capa}" class="w-10 h-10 object-cover rounded-lg border border-rose-200">
+                        <span class="font-bold text-gray-800">${p.nome}</span>
+                    </td>
+                    <td class="py-3 uppercase text-xs font-bold text-gray-500">${p.categoria}</td>
+                    <td class="py-3 font-bold text-rose-gold">R$ ${p.valor.toFixed(2)}</td>
+                    <td class="py-3 text-right space-x-2">
+                        <button onclick="editarProduto('${p.id}')" class="text-rose-gold hover:underline font-bold text-xs">Editar</button>
+                        <button onclick="removerProduto('${p.id}')" class="text-red-500 hover:underline font-bold text-xs">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
 
-        window.fecharFormulario = function() {
-            document.getElementById('form-container').classList.add('hidden');
-        };
+    window.abrirFormularioNovo = function() {
+        document.getElementById('prod-id').value = '';
+        document.getElementById('produto-form').reset();
+        document.getElementById('container-fotos-dinamico').innerHTML = '';
+        adicionarCampoFoto();
+        document.getElementById('form-container').classList.remove('hidden');
+    };
 
-        window.editarProduto = function(id) {
-            const p = listaProdutos.find(item => item.id === id);
-            if (!p) return;
-            document.getElementById('prod-id').value = p.id;
-            document.getElementById('prod-nome').value = p.nome;
-            document.getElementById('prod-categoria').value = p.categoria;
-            document.getElementById('prod-valor').value = p.valor;
-            const container = document.getElementById('container-fotos-dinamico');
-            container.innerHTML = '';
-            (p.variacoes || []).forEach(v => adicionarCampoFoto(v.foto, v.descricao));
-            document.getElementById('form-container').classList.remove('hidden');
-        };
+    window.fecharFormulario = function() {
+        document.getElementById('form-container').classList.add('hidden');
+    };
 
-        window.removerProduto = async function(id) {
-            if (confirm("Deseja apagar este produto?")) {
+    window.editarProduto = function(id) {
+        const p = listaProdutos.find(item => item.id === id);
+        if (!p) return;
+        document.getElementById('prod-id').value = p.id;
+        document.getElementById('prod-nome').value = p.nome;
+        document.getElementById('prod-categoria').value = p.categoria;
+        document.getElementById('prod-valor').value = p.valor;
+        const container = document.getElementById('container-fotos-dinamico');
+        container.innerHTML = '';
+        (p.variacoes || []).forEach(v => adicionarCampoFoto(v.foto, v.descricao));
+        document.getElementById('form-container').classList.remove('hidden');
+    };
+
+    window.removerProduto = async function(id) {
+        if (confirm("Deseja apagar este produto?")) {
+            try {
                 await deleteDoc(doc(db, "produtos", id));
                 carregarProdutos();
+            } catch (err) {
+                alert("Erro ao excluir produto.");
+                console.error(err);
             }
-        };
-    </script>
+        }
+    };
+</script>
 </body>
 </html>
