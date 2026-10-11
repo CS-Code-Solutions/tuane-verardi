@@ -22,24 +22,24 @@
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
-        /* TELA DE LOGIN TELA CHEIA FIXA */
+        /* TELA DE LOGIN TELA CHEIA FIXA COM IMAGEM DE FUNDO GARANTIDA */
         #login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            z-index: 9999 !important;
             padding: 15px;
             box-sizing: border-box;
-            background-image: url('fundo.jpeg'); /* NOME CORRIGIDO CONFORME O GITHUB */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-image: url('fundo.jpeg') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
         }
 
         #login-overlay::after {
@@ -71,7 +71,7 @@
         }
     </style>
 </head>
-<body class="text-gray-800 flex flex-col md:flex-row min-h-screen">
+<body class="text-gray-800 min-h-screen">
 
     <!-- MODAL DE RECORTE DE IMAGEM -->
     <div id="modal-recorte" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
@@ -105,8 +105,8 @@
         </div>
     </div>
 
-    <!-- PAINEL PRINCIPAL (TOTALMENTE OCULTO POR PADRÃO ATÉ AUTENTICAR) -->
-    <div id="admin-main-wrapper" class="w-full flex flex-col md:flex-row min-h-screen" style="display: none;">
+    <!-- PAINEL PRINCIPAL (TOTALMENTE OCULTO ATÉ O LOGIN) -->
+    <div id="admin-main-wrapper" class="w-full min-h-screen flex flex-col md:flex-row hidden">
         
         <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-3 flex justify-between items-center sticky top-0 z-40">
             <div class="flex items-center gap-2">
@@ -327,25 +327,25 @@
                     const docSnap = await getDoc(docRef);
 
                     if (docSnap.exists()) {
-                        loginOverlay.style.display = 'none';
-                        adminWrapper.style.display = 'flex';
+                        loginOverlay.classList.add('hidden');
+                        adminWrapper.classList.remove('hidden');
                         carregarProdutos();
                     } else {
                         alert(`Acesso não autorizado: O e-mail ${user.email} não tem permissão neste painel.`);
                         await signOut(auth);
-                        loginOverlay.style.display = 'flex';
-                        adminWrapper.style.display = 'none';
+                        loginOverlay.classList.remove('hidden');
+                        adminWrapper.classList.add('hidden');
                     }
                 } catch (error) {
                     console.error("Erro ao verificar credenciais:", error);
                     alert("Aviso do Firebase: Verifique as regras de segurança.");
                     await signOut(auth);
-                    loginOverlay.style.display = 'flex';
-                    adminWrapper.style.display = 'none';
+                    loginOverlay.classList.remove('hidden');
+                    adminWrapper.classList.add('hidden');
                 }
             } else {
-                loginOverlay.style.display = 'flex';
-                adminWrapper.style.display = 'none';
+                loginOverlay.classList.remove('hidden');
+                adminWrapper.classList.add('hidden');
             }
         });
 
