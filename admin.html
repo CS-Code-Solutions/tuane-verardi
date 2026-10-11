@@ -13,7 +13,7 @@
             font-family: 'Plus Jakarta Sans', sans-serif; 
             margin: 0;
             padding: 0;
-            background-color: #FDF6F6;
+            background-color: #121212;
             min-height: 100vh;
         }
 
@@ -22,26 +22,37 @@
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
-        /* TELA DE LOGIN TELA CHEIA FIXA COM IMAGEM DE FUNDO GARANTIDA */
+        /* ESTRUTURA DE LOGIN IDÊNTICA AO PROJETO BURGER 301 */
         #login-overlay {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            height: 100dvh !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            z-index: 9999 !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
             padding: 15px;
             box-sizing: border-box;
-            background-image: url('fundo.jpeg') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
+            background-color: #121212;
+            overflow: hidden;
         }
 
+        /* IMAGEM DE FUNDO EM CAMADA FIXA DO LOGIN */
+        #bg-login-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 1;
+        }
+
+        /* ESCURECIMENTO DA IMAGEM PARA DESTACAR A CAIXA */
         #login-overlay::after {
             content: '';
             position: absolute;
@@ -49,16 +60,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.35);
-            z-index: 1;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2;
             pointer-events: none;
         }
 
         .box-led-rosegold {
             position: relative;
-            z-index: 2;
+            z-index: 3;
             border: 2px solid rgba(184, 115, 82, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
         .login-footer p {
@@ -87,8 +98,10 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN COM IMAGEM DE FUNDO -->
+    <!-- TELA DE LOGIN COM IMAGEM DE FUNDO TAG IMG -->
     <div id="login-overlay">
+        <img id="bg-login-img" src="fundo.jpg" alt="Fundo Tuane Verardi">
+
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
             <div>
@@ -105,7 +118,7 @@
         </div>
     </div>
 
-    <!-- PAINEL PRINCIPAL (TOTALMENTE OCULTO ATÉ O LOGIN) -->
+    <!-- PAINEL PRINCIPAL (TOTALMENTE OCULTO ATÉ LOGIN) -->
     <div id="admin-main-wrapper" class="w-full min-h-screen flex flex-col md:flex-row hidden">
         
         <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-3 flex justify-between items-center sticky top-0 z-40">
