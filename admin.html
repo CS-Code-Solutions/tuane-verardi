@@ -22,6 +22,7 @@
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
+        /* TELA DE LOGIN TELA CHEIA FIXA */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -32,10 +33,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 999;
+            z-index: 9999;
             padding: 15px;
             box-sizing: border-box;
-            background-image: url('fundo.jpeg');
+            background-image: url('fundo.jpeg'); /* NOME CORRIGIDO CONFORME O GITHUB */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -57,7 +58,7 @@
             position: relative;
             z-index: 2;
             border: 2px solid rgba(184, 115, 82, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .login-footer p {
@@ -86,7 +87,7 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE LOGIN COM IMAGEM DE FUNDO -->
     <div id="login-overlay">
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
@@ -104,8 +105,8 @@
         </div>
     </div>
 
-    <!-- PAINEL PRINCIPAL -->
-    <div id="admin-main-wrapper" class="contents hidden">
+    <!-- PAINEL PRINCIPAL (TOTALMENTE OCULTO POR PADRÃO ATÉ AUTENTICAR) -->
+    <div id="admin-main-wrapper" class="w-full flex flex-col md:flex-row min-h-screen" style="display: none;">
         
         <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-3 flex justify-between items-center sticky top-0 z-40">
             <div class="flex items-center gap-2">
@@ -158,7 +159,7 @@
                     </button>
                 </div>
 
-                <!-- FORMULÁRIO COMPLETO COM ESTOQUE -->
+                <!-- FORMULÁRIO -->
                 <div id="form-container" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-6">
                     <h3 class="text-base md:text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
                     <form id="produto-form" class="space-y-4 md:space-y-6">
@@ -222,7 +223,7 @@
                     </form>
                 </div>
 
-                <!-- LISTA DE PRODUTOS RESPONSIVA (CARDS NO MOBILE / TABELA NO DESKTOP) -->
+                <!-- LISTA DE PRODUTOS -->
                 <div id="container-lista-produtos" class="space-y-3"></div>
             </div>
 
@@ -326,25 +327,25 @@
                     const docSnap = await getDoc(docRef);
 
                     if (docSnap.exists()) {
-                        loginOverlay.classList.add('hidden');
-                        adminWrapper.classList.remove('hidden');
+                        loginOverlay.style.display = 'none';
+                        adminWrapper.style.display = 'flex';
                         carregarProdutos();
                     } else {
                         alert(`Acesso não autorizado: O e-mail ${user.email} não tem permissão neste painel.`);
                         await signOut(auth);
-                        loginOverlay.classList.remove('hidden');
-                        adminWrapper.classList.add('hidden');
+                        loginOverlay.style.display = 'flex';
+                        adminWrapper.style.display = 'none';
                     }
                 } catch (error) {
                     console.error("Erro ao verificar credenciais:", error);
                     alert("Aviso do Firebase: Verifique as regras de segurança.");
                     await signOut(auth);
-                    loginOverlay.classList.remove('hidden');
-                    adminWrapper.classList.add('hidden');
+                    loginOverlay.style.display = 'flex';
+                    adminWrapper.style.display = 'none';
                 }
             } else {
-                loginOverlay.classList.remove('hidden');
-                adminWrapper.classList.add('hidden');
+                loginOverlay.style.display = 'flex';
+                adminWrapper.style.display = 'none';
             }
         });
 
@@ -468,7 +469,6 @@
             }
         }
 
-        // RENDERIZAÇÃO RESPONSIVA CONFORTEVEL PARA CELULAR E DESKTOP
         function renderizarProdutosAdmin() {
             const container = document.getElementById('container-lista-produtos');
             container.innerHTML = '';
@@ -503,15 +503,12 @@
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
-                        
-                        <!-- BOTÃO DE AJUSTE RÁPIDO DE ESTOQUE DE QUANTIDADE -->
                         <div class="flex items-center bg-gray-100 p-1 rounded-xl gap-1">
                             <button type="button" class="btn-qtd-menos w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">-</button>
                             <span class="text-xs font-extrabold px-1 text-gray-700 min-w-[24px] text-center">${qtd}</span>
                             <button type="button" class="btn-qtd-mais w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">+</button>
                         </div>
 
-                        <!-- BOTÃO TOGGLE INDISPONÍVEL / DISPONÍVEL -->
                         <button type="button" class="btn-toggle-indisponivel text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition ${eIndisponivel ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}">
                             ${eIndisponivel ? '🚫 Indisponível' : '🟢 Disponível'}
                         </button>
