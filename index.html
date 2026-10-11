@@ -8,7 +8,476 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDF6F6; }<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuane Verardi Confecções | Catálogo Online</title>
+    <link rel="icon" type="image/png" href="Ico.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDF6F6; }
+        .text-rose-gold { color: #B87352; }
+        .bg-rose-gold { background-color: #B87352; }
+        .bg-rose-gold-dark { background-color: #8C4E33; }
+        .border-rose-gold { border-color: #B87352; }
+        .login-footer p { font-size: 11px; color: #6B7280; }
+        .login-footer a { color: #f28c28; text-decoration: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <div>
+        <!-- CABEÇALHO RESPONSIVO -->
+        <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
+            <div class="max-w-6xl mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="cabe2.png" alt="Tuane Verardi Confecções" class="h-16 md:h-20 w-auto object-contain cursor-pointer transition-transform hover:scale-105" onclick="location.reload()">
+                </div>
+                
+                <div class="flex items-center gap-2 md:gap-3">
+                    <button id="btn-abrir-carrinho" type="button" class="relative bg-rose-50 p-2.5 md:p-3 rounded-xl border border-rose-200 hover:bg-rose-100 transition cursor-pointer">
+                        <span class="text-xl md:text-2xl">🛒</span>
+                        <span id="badge-carrinho" class="absolute -top-1.5 -right-1.5 bg-rose-gold text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
+                    </button>
+                    
+                    <a href="admin.html" class="text-xs md:text-sm font-bold text-rose-gold border border-rose-gold px-3 py-2 md:px-4 md:py-2.5 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
+                </div>
+            </div>
+            
+            <!-- BARRA DE CATEGORIAS -->
+            <div class="bg-[#F8E3E3] border-t border-rose-200 overflow-x-auto no-scrollbar">
+                <div class="max-w-6xl mx-auto flex gap-1.5 p-2 text-[11px] md:text-xs font-bold whitespace-nowrap">
+                    <button onclick="filtrarCategoria('todos')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl bg-rose-gold text-white shadow-sm cursor-pointer">Todos</button>
+                    <button onclick="filtrarCategoria('cobertores')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Cobertores</button>
+                    <button onclick="filtrarCategoria('coberdron')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Coberdron</button>
+                    <button onclick="filtrarCategoria('lencois')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Lençóis</button>
+                    <button onclick="filtrarCategoria('toalhas')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Toalhas</button>
+                    <button onclick="filtrarCategoria('lingeries')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Lingeries</button>
+                    <button onclick="filtrarCategoria('eletrodomesticos')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Eletrodomésticos</button>
+                    <button onclick="filtrarCategoria('outros')" class="btn-cat px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl text-gray-700 hover:bg-white/50 cursor-pointer">Outros</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- VITRINE COM TODAS AS VARIAÇÕES EXIBIDAS COMO CARDS -->
+        <main class="max-w-6xl mx-auto p-3 md:p-6">
+            <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"></div>
+        </main>
+    </div>
+
+    <!-- MODAL DE DETALHES DO PRODUTO / CARROSSEL -->
+    <div id="modal-produto" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
+            <button id="btn-fechar-modal-prod" class="absolute top-3 right-3 z-10 bg-black/50 text-white w-8 h-8 rounded-full font-bold hover:bg-black transition">✕</button>
+            
+            <div class="overflow-y-auto p-4 md:p-6 space-y-3 md:space-y-4">
+                <div class="relative bg-gray-100 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
+                    <img id="modal-img-destaque" src="" class="w-full h-full object-cover">
+                    <button id="btn-carrossel-prev" class="absolute left-2 bg-white/80 hover:bg-white p-2 rounded-full text-xs font-bold shadow text-gray-800">❮</button>
+                    <button id="btn-carrossel-next" class="absolute right-2 bg-white/80 hover:bg-white p-2 rounded-full text-xs font-bold shadow text-gray-800">❯</button>
+                    <span id="carrossel-contador" class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">1 / 1</span>
+                </div>
+
+                <div id="modal-miniaturas" class="flex gap-2 overflow-x-auto pb-2"></div>
+
+                <div>
+                    <span id="modal-categoria" class="text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2.5 py-1 rounded-md inline-block mb-1"></span>
+                    <h2 id="modal-nome" class="text-base md:text-lg font-extrabold text-gray-800"></h2>
+                    <p id="modal-variacao-desc" class="text-xs text-gray-500 font-medium min-h-[16px] mt-1"></p>
+                    <p id="modal-valor" class="text-lg md:text-xl font-black text-rose-gold mt-1 md:mt-2"></p>
+                </div>
+            </div>
+
+            <div class="p-3 md:p-4 border-t border-rose-100 bg-rose-50/50 flex gap-2">
+                <button id="btn-continuar-comprando-modal" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">Continuar Comprando</button>
+                <button id="btn-add-carrinho" type="button" class="w-1/2 bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer">Adicionar ao Carrinho 🛒</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FLUTUANTE DO CARRINHO / CHECKOUT -->
+    <div id="modal-carrinho" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
+            
+            <div id="etapa-carrinho-itens" class="p-4 md:p-6 flex flex-col h-full space-y-4">
+                <div class="flex justify-between items-center border-b pb-3 border-rose-100">
+                    <h3 class="text-base md:text-lg font-extrabold text-rose-gold">🛒 Meu Carrinho</h3>
+                    <button id="btn-fechar-carrinho" class="text-gray-400 hover:text-gray-600 font-bold">✕</button>
+                </div>
+
+                <div id="container-itens-carrinho" class="overflow-y-auto max-h-[50vh] divide-y divide-rose-100 space-y-2 pr-1"></div>
+
+                <div class="border-t border-rose-100 pt-3 space-y-3">
+                    <div class="flex justify-between items-center font-extrabold text-sm md:text-base">
+                        <span class="text-gray-700">Valor Total:</span>
+                        <span id="carrinho-total-valor" class="text-rose-gold text-base md:text-lg">R$ 0,00</span>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button id="btn-continuar-comprando-carrinho" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">Continuar Comprando</button>
+                        <button id="btn-avancar-checkout" type="button" class="w-1/2 bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer">Concluir Compra ➔</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="etapa-carrinho-dados" class="p-4 md:p-6 flex flex-col h-full space-y-4 hidden">
+                <div class="flex justify-between items-center border-b pb-3 border-rose-100">
+                    <h3 class="text-base md:text-lg font-extrabold text-rose-gold">📋 Dados para Entrega</h3>
+                    <button id="btn-fechar-carrinho-2" class="text-gray-400 hover:text-gray-600 font-bold">✕</button>
+                </div>
+
+                <form id="form-cliente-whatsapp" class="space-y-3 text-left overflow-y-auto max-h-[55vh] pr-1">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Nome Completo *</label>
+                        <input type="text" id="cli-nome" required class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Ex: Maria Silva">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Endereço de Entrega *</label>
+                        <input type="text" id="cli-endereco" required class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Rua, Número, Bairro, Cidade">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Forma de Pagamento *</label>
+                        <select id="cli-pagamento" class="w-full px-3.5 py-2 border rounded-xl text-xs bg-white focus:outline-none focus:border-rose-gold">
+                            <option value="Pix">Pix</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Dinheiro na Entrega">Dinheiro na Entrega</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Observações (Opcional)</label>
+                        <textarea id="cli-obs" rows="2" class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Ex: Deixar na portaria"></textarea>
+                    </div>
+
+                    <div class="pt-2 flex gap-2">
+                        <button id="btn-voltar-carrinho" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">✏️ Editar Carrinho</button>
+                        <button type="submit" class="w-1/2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer flex items-center justify-center gap-1">
+                            <span>Concluir via WhatsApp</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-white border-t border-rose-100 py-6 text-center login-footer">
+        <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
+    </footer>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        let todosProdutos = [];
+        let produtoSelecionado = null;
+        let indiceFotoAtual = 0;
+        
+        let carrinho = JSON.parse(localStorage.getItem('tuane_carrinho')) || [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            atualizarBadgeCarrinho();
+
+            document.getElementById('btn-abrir-carrinho').addEventListener('click', abrirCarrinho);
+            document.getElementById('btn-fechar-carrinho').addEventListener('click', fecharCarrinho);
+            document.getElementById('btn-fechar-carrinho-2').addEventListener('click', fecharCarrinho);
+            document.getElementById('btn-continuar-comprando-carrinho').addEventListener('click', fecharCarrinho);
+            document.getElementById('btn-fechar-modal-prod').addEventListener('click', fecharModalProduto);
+            document.getElementById('btn-continuar-comprando-modal').addEventListener('click', fecharModalProduto);
+
+            document.getElementById('btn-carrossel-prev').addEventListener('click', () => navegarCarrossel(-1));
+            document.getElementById('btn-carrossel-next').addEventListener('click', () => navegarCarrossel(1));
+
+            document.getElementById('btn-add-carrinho').addEventListener('click', adicionarAoCarrinhoAtual);
+            document.getElementById('btn-avancar-checkout').addEventListener('click', avancarParaCheckout);
+            document.getElementById('btn-voltar-carrinho').addEventListener('click', voltarParaItens);
+
+            document.getElementById('form-cliente-whatsapp').addEventListener('submit', finalizarCompraWhatsApp);
+        });
+
+        async function carregarVitrine() {
+            try {
+                const snap = await getDocs(collection(db, "produtos"));
+                todosProdutos = [];
+                snap.forEach(d => {
+                    const item = { id: d.id, ...d.data() };
+                    if (item.exibirVitrine !== false) {
+                        todosProdutos.push(item);
+                    }
+                });
+                renderizarProdutos(todosProdutos);
+            } catch (err) {
+                console.error("Erro ao carregar vitrine:", err);
+            }
+        }
+
+        window.filtrarCategoria = function(cat) {
+            if (cat === 'todos') {
+                renderizarProdutos(todosProdutos);
+            } else {
+                renderizarProdutos(todosProdutos.filter(p => p.categoria === cat));
+            }
+        };
+
+        // EXIBE TODAS AS VARIAÇÕES COMO CARDS SEPARADOS NA VITRINE
+        function renderizarProdutos(lista) {
+            const container = document.getElementById('grid-produtos');
+            container.innerHTML = '';
+            if (lista.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-400 py-12 text-xs md:text-sm">Nenhum produto cadastrado nesta categoria.</p>';
+                return;
+            }
+
+            lista.forEach(p => {
+                const variacoes = p.variacoes && p.variacoes.length > 0 
+                    ? p.variacoes 
+                    : [{ foto: 'https://via.placeholder.com/300', descricao: '' }];
+
+                variacoes.forEach((varItem, indexVar) => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer";
+                    
+                    const descExibicao = varItem.descricao ? ` - ${varItem.descricao}` : '';
+
+                    card.innerHTML = `
+                        <div>
+                            <img src="${varItem.foto}" class="w-full h-36 md:h-48 object-cover">
+                            <div class="p-3 md:p-4">
+                                <span class="text-[9px] md:text-[10px] font-bold text-rose-gold uppercase bg-rose-50 px-2 py-0.5 rounded-md inline-block mb-1">${p.categoria}</span>
+                                <h3 class="font-bold text-gray-800 text-xs md:text-sm mb-1 md:mb-2 line-clamp-2">${p.nome}${descExibicao}</h3>
+                                <p class="text-rose-gold font-extrabold text-sm md:text-base">R$ ${p.valor.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                    // Ao clicar no card, abre o modal com a variação específica em destaque
+                    card.addEventListener('click', () => abrirModalProduto(p, indexVar));
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function abrirModalProduto(prod, idxInicial = 0) {
+            produtoSelecionado = prod;
+            indiceFotoAtual = idxInicial;
+
+            document.getElementById('modal-categoria').textContent = prod.categoria;
+            document.getElementById('modal-nome').textContent = prod.nome;
+            document.getElementById('modal-valor').textContent = `R$ ${prod.valor.toFixed(2)}`;
+
+            atualizarCarrossel();
+            document.getElementById('modal-produto').classList.remove('hidden');
+        }
+
+        function fecharModalProduto() {
+            document.getElementById('modal-produto').classList.add('hidden');
+        }
+
+        function atualizarCarrossel() {
+            const variacoes = produtoSelecionado.variacoes && produtoSelecionado.variacoes.length > 0 
+                ? produtoSelecionado.variacoes 
+                : [{ foto: 'https://via.placeholder.com/400', descricao: '' }];
+
+            const varAtual = variacoes[indiceFotoAtual];
+            document.getElementById('modal-img-destaque').src = varAtual.foto;
+            document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
+            document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
+
+            const minCont = document.getElementById('modal-miniaturas');
+            minCont.innerHTML = '';
+            variacoes.forEach((v, idx) => {
+                const imgThumb = document.createElement('img');
+                imgThumb.src = v.foto;
+                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'}`;
+                imgThumb.addEventListener('click', () => {
+                    indiceFotoAtual = idx;
+                    atualizarCarrossel();
+                });
+                minCont.appendChild(imgThumb);
+            });
+        }
+
+        function navegarCarrossel(direcao) {
+            const variacoes = produtoSelecionado.variacoes || [];
+            if (variacoes.length === 0) return;
+            indiceFotoAtual = (indiceFotoAtual + direcao + variacoes.length) % variacoes.length;
+            atualizarCarrossel();
+        }
+
+        function adicionarAoCarrinhoAtual() {
+            if (!produtoSelecionado) return;
+            const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '' };
+
+            const itemExistente = carrinho.find(item => item.id === produtoSelecionado.id && item.variacaoDesc === variacaoAtual.descricao);
+
+            if (itemExistente) {
+                itemExistente.quantidade += 1;
+            } else {
+                carrinho.push({
+                    id: produtoSelecionado.id,
+                    nome: produtoSelecionado.nome,
+                    valor: produtoSelecionado.valor,
+                    foto: variacaoAtual.foto || produtoSelecionado.variacoes?.[0]?.foto || '',
+                    variacaoDesc: variacaoAtual.descricao || '',
+                    quantidade: 1
+                });
+            }
+
+            salvarCarrinho();
+            fecharModalProduto();
+            abrirCarrinho();
+        }
+
+        function salvarCarrinho() {
+            localStorage.setItem('tuane_carrinho', JSON.stringify(carrinho));
+            atualizarBadgeCarrinho();
+        }
+
+        function atualizarBadgeCarrinho() {
+            const badge = document.getElementById('badge-carrinho');
+            const totalItens = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
+            if (totalItens > 0) {
+                badge.textContent = totalItens;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function abrirCarrinho() {
+            voltarParaItens();
+            renderizarItensCarrinho();
+            document.getElementById('modal-carrinho').classList.remove('hidden');
+        }
+
+        function fecharCarrinho() {
+            document.getElementById('modal-carrinho').classList.add('hidden');
+        }
+
+        function renderizarItensCarrinho() {
+            const container = document.getElementById('container-itens-carrinho');
+            const totalEl = document.getElementById('carrinho-total-valor');
+            container.innerHTML = '';
+
+            if (carrinho.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 py-8 text-xs">Seu carrinho está vazio.</p>';
+                totalEl.textContent = 'R$ 0,00';
+                return;
+            }
+
+            let valorTotal = 0;
+
+            carrinho.forEach((item, index) => {
+                const subtotal = item.valor * item.quantidade;
+                valorTotal += subtotal;
+
+                const div = document.createElement('div');
+                div.className = "py-3 flex items-center justify-between gap-2 md:gap-3";
+                div.innerHTML = `
+                    <img src="${item.foto || 'https://via.placeholder.com/50'}" class="w-10 h-10 md:w-12 md:h-12 object-cover rounded-lg border border-rose-100">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-gray-800 text-xs truncate">${item.nome}</h4>
+                        ${item.variacaoDesc ? `<p class="text-[10px] text-gray-500">Var: ${item.variacaoDesc}</p>` : ''}
+                        <p class="text-rose-gold font-bold text-xs">R$ ${item.valor.toFixed(2)}</p>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button class="btn-qtd-menos text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-md font-bold">-</button>
+                        <span class="text-xs font-bold w-4 text-center">${item.quantidade}</span>
+                        <button class="btn-qtd-mais text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-md font-bold">+</button>
+                    </div>
+                    <button class="btn-remover-item text-red-500 text-xs hover:text-red-700 font-bold ml-1">🗑️</button>
+                `;
+
+                div.querySelector('.btn-qtd-menos').addEventListener('click', () => alterarQuantidade(index, -1));
+                div.querySelector('.btn-qtd-mais').addEventListener('click', () => alterarQuantidade(index, 1));
+                div.querySelector('.btn-remover-item').addEventListener('click', () => removerItemCarrinho(index));
+
+                container.appendChild(div);
+            });
+
+            totalEl.textContent = `R$ ${valorTotal.toFixed(2)}`;
+        }
+
+        function alterarQuantidade(index, delta) {
+            carrinho[index].quantidade += delta;
+            if (carrinho[index].quantidade <= 0) {
+                carrinho.splice(index, 1);
+            }
+            salvarCarrinho();
+            renderizarItensCarrinho();
+        }
+
+        function removerItemCarrinho(index) {
+            carrinho.splice(index, 1);
+            salvarCarrinho();
+            renderizarItensCarrinho();
+        }
+
+        function avancarParaCheckout() {
+            if (carrinho.length === 0) {
+                alert("Seu carrinho está vazio!");
+                return;
+            }
+            document.getElementById('etapa-carrinho-itens').classList.add('hidden');
+            document.getElementById('etapa-carrinho-dados').classList.remove('hidden');
+        }
+
+        function voltarParaItens() {
+            document.getElementById('etapa-carrinho-dados').classList.add('hidden');
+            document.getElementById('etapa-carrinho-itens').classList.remove('hidden');
+        }
+
+        function finalizarCompraWhatsApp(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('cli-nome').value;
+            const endereco = document.getElementById('cli-endereco').value;
+            const pagamento = document.getElementById('cli-pagamento').value;
+            const obs = document.getElementById('cli-obs').value;
+
+            let valorTotal = 0;
+            let listaProdutosTexto = "";
+
+            carrinho.forEach((item, idx) => {
+                const subtotal = item.valor * item.quantidade;
+                valorTotal += subtotal;
+                listaProdutosTexto += `${idx + 1}. *${item.nome}*\n`;
+                if (item.variacaoDesc) {
+                    listaProdutosTexto += `   • Variação: ${item.variacaoDesc}\n`;
+                }
+                listaProdutosTexto += `   • Qtd: ${item.quantidade}x | Valor: R$ ${item.valor.toFixed(2)}\n\n`;
+            });
+
+            let mensagem = `Olá! Gostaria de fazer o seguinte pedido:\n\n`;
+            mensagem += `👤 *DADOS DO CLIENTE*\n`;
+            mensagem += `• Nome: ${nome}\n`;
+            mensagem += `• Endereço: ${endereco}\n`;
+            mensagem += `• Forma de Pagamento: ${pagamento}\n`;
+            if (obs) mensagem += `• Obs: ${obs}\n`;
+            mensagem += `\n🛍️ *PRODUTOS SELECIONADOS*\n${listaProdutosTexto}`;
+            mensagem += `💰 *VALOR TOTAL:* R$ ${valorTotal.toFixed(2)}\n\n`;
+            mensagem += `Aguardo retorno para confirmação do pedido!`;
+
+            const numeroWhatsApp = "5551991935081";
+            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensagem)}`;
+
+            carrinho = [];
+            salvarCarrinho();
+            fecharCarrinho();
+
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        carregarVitrine();
+    </script>
+</body>
+</html>
         .text-rose-gold { color: #B87352; }
         .bg-rose-gold { background-color: #B87352; }
         .bg-rose-gold-dark { background-color: #8C4E33; }
