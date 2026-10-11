@@ -22,7 +22,6 @@
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
-        /* TELA DE LOGIN COM IMAGEM DE FUNDO FIXA */
         #login-overlay {
             position: fixed;
             top: 0;
@@ -163,7 +162,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 mb-4 md:mb-6 gap-3">
                     <div>
                         <h2 id="titulo-secao" class="text-base md:text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
-                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Cadastre seus produtos, estoque e variações com facilidade</p>
+                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Cadastre seus produtos e ajuste individualmente o estoque de cada variação</p>
                     </div>
                     <button type="button" id="btn-abrir-novo" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer text-center">
                         ➕ Novo Produto
@@ -176,7 +175,7 @@
                     <form id="produto-form" class="space-y-4 md:space-y-6">
                         <input type="hidden" id="prod-id">
                         
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nome do Produto</label>
                                 <input type="text" id="prod-nome" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
@@ -196,10 +195,6 @@
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Valor (R$)</label>
                                 <input type="number" step="0.01" id="prod-valor" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Qtd em Estoque</label>
-                                <input type="number" id="prod-qtd" min="0" value="10" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
                             </div>
                         </div>
 
@@ -221,7 +216,7 @@
                         <!-- FOTOS E VARIAÇÕES -->
                         <div class="bg-rose-50/50 p-3 md:p-5 rounded-2xl border border-rose-200 space-y-4">
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos e Variações do Produto</label>
+                                <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos, Variações e Estoque Individual</label>
                                 <button type="button" id="btn-add-foto" class="w-full sm:w-auto bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
                             </div>
                             <div id="container-fotos-dinamico" class="space-y-4"></div>
@@ -234,7 +229,7 @@
                     </form>
                 </div>
 
-                <!-- LISTA DE PRODUTOS -->
+                <!-- LISTA DE PRODUTOS/VARIAÇÕES -->
                 <div id="container-lista-produtos" class="space-y-3"></div>
             </div>
 
@@ -277,369 +272,4 @@
                     toggleDot.className = 'dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-5';
                 } else {
                     toggleBg.className = 'block bg-gray-300 w-12 h-7 rounded-full transition-colors duration-300';
-                    toggleDot.className = 'dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-0';
-                }
-            });
-
-            const btnMenuMob = document.getElementById('btn-toggle-menu-mobile');
-            const btnFecharMob = document.getElementById('btn-fechar-menu-mobile');
-            const sidebar = document.getElementById('sidebar-admin');
-            const overlayMob = document.getElementById('overlay-menu-mobile');
-
-            function abrirMenuMobile() {
-                sidebar.classList.remove('-translate-x-full');
-                overlayMob.classList.remove('hidden');
-            }
-
-            function fecharMenuMobile() {
-                sidebar.classList.add('-translate-x-full');
-                overlayMob.classList.add('hidden');
-            }
-
-            if(btnMenuMob) btnMenuMob.addEventListener('click', abrirMenuMobile);
-            if(btnFecharMob) btnFecharMob.addEventListener('click', fecharMenuMobile);
-            if(overlayMob) overlayMob.addEventListener('click', fecharMenuMobile);
-        });
-
-        function alternarAba(soVitrine) {
-            modoFiltroVitrine = soVitrine;
-            const btnEstoque = document.getElementById('nav-estoque');
-            const btnVitrine = document.getElementById('nav-vitrine');
-            const titulo = document.getElementById('titulo-secao');
-            const subtitulo = document.getElementById('subtitulo-secao');
-
-            if (soVitrine) {
-                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
-                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
-                titulo.textContent = "Vitrine da Loja";
-                subtitulo.textContent = "Exibindo apenas os produtos ativados para aparecer no catálogo público";
-            } else {
-                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
-                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
-                titulo.textContent = "Gestão de Estoque";
-                subtitulo.textContent = "Cadastre seus produtos, estoque e variações facilmente";
-            }
-
-            const sidebar = document.getElementById('sidebar-admin');
-            const overlayMob = document.getElementById('overlay-menu-mobile');
-            if(sidebar) sidebar.classList.add('-translate-x-full');
-            if(overlayMob) overlayMob.classList.add('hidden');
-
-            renderizarProdutosAdmin();
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            const loginOverlay = document.getElementById('login-overlay');
-            const adminWrapper = document.getElementById('admin-main-wrapper');
-
-            if (user) {
-                try {
-                    const docRef = doc(db, "usuarios_autorizados", user.email);
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists()) {
-                        loginOverlay.style.display = 'none';
-                        adminWrapper.style.display = 'flex';
-                        carregarProdutos();
-                    } else {
-                        alert(`Acesso não autorizado: O e-mail ${user.email} não tem permissão neste painel.`);
-                        await signOut(auth);
-                        loginOverlay.style.display = 'flex';
-                        adminWrapper.style.display = 'none';
-                    }
-                } catch (error) {
-                    console.error("Erro ao verificar credenciais:", error);
-                    alert("Aviso do Firebase: Verifique as regras de segurança.");
-                    await signOut(auth);
-                    loginOverlay.style.display = 'flex';
-                    adminWrapper.style.display = 'none';
-                }
-            } else {
-                loginOverlay.style.display = 'flex';
-                adminWrapper.style.display = 'none';
-            }
-        });
-
-        async function fazerLoginGoogle() {
-            try {
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) {
-                console.error("Erro ao realizar login Google:", error);
-                alert("Erro ao conectar com o Google: " + error.message);
-            }
-        }
-
-        async function fazerLogout() {
-            try {
-                await signOut(auth);
-            } catch (error) {
-                console.error("Erro ao sair:", error);
-            }
-        }
-
-        async function carregarProdutos() {
-            try {
-                const snap = await getDocs(collection(db, "produtos"));
-                listaProdutos = [];
-                snap.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
-                renderizarProdutosAdmin();
-            } catch (err) {
-                console.error("Erro ao carregar produtos:", err);
-            }
-        }
-
-        function adicionarCampoFoto(url = '', descricao = '') {
-            const container = document.getElementById('container-fotos-dinamico');
-            const div = document.createElement('div');
-            div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
-            div.innerHTML = `
-                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg cursor-pointer">🗑️ Remover</button>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem</label>
-                    <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${url}" placeholder="URL ou faça upload abaixo">
-                    <input type="file" accept="image/*" class="input-file-crop mt-1 w-full text-[10px] text-gray-400">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Variação / Descrição da Foto</label>
-                    <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${descricao}" placeholder="Ex: Rosa, Tamanho Casal">
-                </div>
-            `;
-            
-            div.querySelector('.input-file-crop').addEventListener('change', function() {
-                iniciarRecorte(this);
-            });
-
-            container.prepend(div);
-        }
-
-        function iniciarRecorte(input) {
-            const file = input.files[0];
-            if (!file) return;
-            inputTargetGlobal = input.parentElement.querySelector('.input-foto-url');
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('imagem-para-recortar');
-                img.src = e.target.result;
-                document.getElementById('modal-recorte').classList.remove('hidden');
-                if (cropperInstance) cropperInstance.destroy();
-                cropperInstance = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function aplicarRecorte() {
-            if (!cropperInstance || !inputTargetGlobal) return;
-            const canvas = cropperInstance.getCroppedCanvas({ width: 800, height: 800 });
-            inputTargetGlobal.value = canvas.toDataURL('image/jpeg', 0.85);
-            fecharModalRecorte();
-        }
-
-        function fecharModalRecorte() {
-            document.getElementById('modal-recorte').classList.add('hidden');
-            if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
-        }
-
-        async function salvarProduto(e) {
-            e.preventDefault();
-            const id = document.getElementById('prod-id').value;
-            const nome = document.getElementById('prod-nome').value;
-            const categoria = document.getElementById('prod-categoria').value;
-            const valor = parseFloat(document.getElementById('prod-valor').value);
-            const quantidade = parseInt(document.getElementById('prod-qtd').value) || 0;
-            const exibirVitrine = document.getElementById('prod-vitrine').checked;
-
-            let variacoes = [];
-            document.querySelectorAll('#container-fotos-dinamico > div').forEach(div => {
-                const url = div.querySelector('.input-foto-url').value;
-                const desc = div.querySelector('.input-foto-desc').value;
-                if (url) variacoes.push({ foto: url, descricao: desc });
-            });
-
-            const data = { 
-                nome, 
-                categoria, 
-                valor, 
-                quantidade, 
-                indisponivel: quantidade <= 0,
-                exibirVitrine, 
-                variacoes 
-            };
-
-            try {
-                if (id) {
-                    await updateDoc(doc(db, "produtos", id), data);
-                } else {
-                    await addDoc(collection(db, "produtos"), data);
-                }
-
-                fecharFormulario();
-                carregarProdutos();
-            } catch (err) {
-                alert("Erro ao salvar produto no Firestore.");
-                console.error(err);
-            }
-        }
-
-        function renderizarProdutosAdmin() {
-            const container = document.getElementById('container-lista-produtos');
-            container.innerHTML = '';
-            
-            const produtosFiltrados = modoFiltroVitrine 
-                ? listaProdutos.filter(p => p.exibirVitrine !== false)
-                : listaProdutos;
-
-            if (produtosFiltrados.length === 0) {
-                container.innerHTML = `<div class="bg-white p-8 text-center text-gray-400 text-xs rounded-2xl border border-rose-100">Nenhum produto encontrado.</div>`;
-                return;
-            }
-
-            produtosFiltrados.forEach(p => {
-                const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/50';
-                const eIndisponivel = p.indisponivel === true || (p.quantidade !== undefined && p.quantidade <= 0);
-                const qtd = p.quantidade !== undefined ? p.quantidade : 0;
-
-                const card = document.createElement('div');
-                card.className = "bg-white p-3 md:p-4 rounded-2xl border border-rose-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3 transition hover:shadow-md";
-
-                card.innerHTML = `
-                    <div class="flex items-center gap-3 w-full md:w-auto">
-                        <img src="${capa}" class="w-12 h-12 md:w-14 md:h-14 object-cover rounded-xl border border-rose-200">
-                        <div class="flex-1 min-w-0">
-                            <h4 class="font-extrabold text-gray-800 text-xs md:text-sm truncate">${p.nome}</h4>
-                            <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-[10px] font-bold text-gray-400 uppercase bg-gray-100 px-2 py-0.5 rounded">${p.categoria}</span>
-                                <span class="text-rose-gold font-bold text-xs md:text-sm">R$ ${p.valor.toFixed(2)}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
-                        <div class="flex items-center bg-gray-100 p-1 rounded-xl gap-1">
-                            <button type="button" class="btn-qtd-menos w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">-</button>
-                            <span class="text-xs font-extrabold px-1 text-gray-700 min-w-[24px] text-center">${qtd}</span>
-                            <button type="button" class="btn-qtd-mais w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">+</button>
-                        </div>
-
-                        <button type="button" class="btn-toggle-indisponivel text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition ${eIndisponivel ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}">
-                            ${eIndisponivel ? '🚫 Indisponível' : '🟢 Disponível'}
-                        </button>
-
-                        <div class="flex items-center gap-2">
-                            <button type="button" class="btn-editar bg-rose-50 text-rose-gold border border-rose-200 px-3 py-1.5 rounded-xl font-bold text-xs hover:bg-rose-100 cursor-pointer">Editar</button>
-                            <button type="button" class="btn-excluir text-red-500 hover:bg-red-50 p-1.5 rounded-xl font-bold text-xs cursor-pointer">🗑️</button>
-                        </div>
-                    </div>
-                `;
-
-                card.querySelector('.btn-qtd-menos').addEventListener('click', () => alterarEstoqueRapido(p.id, -1));
-                card.querySelector('.btn-qtd-mais').addEventListener('click', () => alterarEstoqueRapido(p.id, 1));
-                card.querySelector('.btn-toggle-indisponivel').addEventListener('click', () => alternarStatusIndisponivel(p.id, !eIndisponivel));
-                card.querySelector('.btn-editar').addEventListener('click', () => editarProduto(p.id));
-                card.querySelector('.btn-excluir').addEventListener('click', () => removerProduto(p.id));
-
-                container.appendChild(card);
-            });
-        }
-
-        async function alterarEstoqueRapido(id, delta) {
-            const prod = listaProdutos.find(p => p.id === id);
-            if (!prod) return;
-            const novaQtd = Math.max(0, (prod.quantidade || 0) + delta);
-            const estaIndisponivel = novaQtd <= 0;
-
-            try {
-                await updateDoc(doc(db, "produtos", id), {
-                    quantidade: novaQtd,
-                    indisponivel: estaIndisponivel
-                });
-                prod.quantidade = novaQtd;
-                prod.indisponivel = estaIndisponivel;
-                renderizarProdutosAdmin();
-            } catch (err) {
-                console.error("Erro ao atualizar estoque:", err);
-            }
-        }
-
-        async function alternarStatusIndisponivel(id, novoStatus) {
-            try {
-                await updateDoc(doc(db, "produtos", id), {
-                    indisponivel: novoStatus
-                });
-                const prod = listaProdutos.find(p => p.id === id);
-                if (prod) prod.indisponivel = novoStatus;
-                renderizarProdutosAdmin();
-            } catch (err) {
-                console.error("Erro ao alterar disponibilidade:", err);
-            }
-        }
-
-        function abrirFormularioNovo() {
-            document.getElementById('prod-id').value = '';
-            document.getElementById('produto-form').reset();
-            document.getElementById('prod-qtd').value = 10;
-            
-            const toggleInput = document.getElementById('prod-vitrine');
-            toggleInput.checked = true;
-            toggleInput.dispatchEvent(new Event('change'));
-
-            document.getElementById('container-fotos-dinamico').innerHTML = '';
-            adicionarCampoFoto();
-            document.getElementById('form-container').classList.remove('hidden');
-            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function fecharFormulario() {
-            document.getElementById('form-container').classList.add('hidden');
-        }
-
-        function editarProduto(id) {
-            const p = listaProdutos.find(item => item.id === id);
-            if (!p) return;
-            document.getElementById('prod-id').value = p.id;
-            document.getElementById('prod-nome').value = p.nome;
-            document.getElementById('prod-categoria').value = p.categoria;
-            document.getElementById('prod-valor').value = p.valor;
-            document.getElementById('prod-qtd').value = p.quantidade !== undefined ? p.quantidade : 10;
-            
-            const toggleInput = document.getElementById('prod-vitrine');
-            toggleInput.checked = p.exibirVitrine !== false;
-            toggleInput.dispatchEvent(new Event('change'));
-
-            const container = document.getElementById('container-fotos-dinamico');
-            container.innerHTML = '';
-            (p.variacoes || []).forEach(v => {
-                const div = document.createElement('div');
-                div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
-                div.innerHTML = `
-                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg cursor-pointer">🗑️ Remover</button>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem</label>
-                        <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${v.foto}" placeholder="URL ou faça upload abaixo">
-                        <input type="file" accept="image/*" class="input-file-crop mt-1 w-full text-[10px] text-gray-400">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Variação / Descrição da Foto</label>
-                        <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${v.descricao || ''}" placeholder="Ex: Rosa, Tamanho Casal">
-                    </div>
-                `;
-                div.querySelector('.input-file-crop').addEventListener('change', function() { iniciarRecorte(this); });
-                container.appendChild(div);
-            });
-            document.getElementById('form-container').classList.remove('hidden');
-            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        async function removerProduto(id) {
-            if (confirm("Deseja apagar este produto?")) {
-                try {
-                    await deleteDoc(doc(db, "produtos", id));
-                    carregarProdutos();
-                } catch (err) {
-                    alert("Erro ao excluir produto.");
-                    console.error(err);
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+                    toggleDot.className = 'dot absolute left-1 top-1 bg-
