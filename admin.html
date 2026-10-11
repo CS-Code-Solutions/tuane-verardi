@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Gestor | Tuane Verardi Confecções</title>
-    <link rel="icon" type="image/png" href="ico.png">
+    <link rel="icon" type="image/png" href="Ico.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Fundo aplicado diretamente na tag body */
+        /* Apontado para fundo.jpeg exatamente como no seu repositório */
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #FDF6F6;
@@ -190,7 +190,6 @@
         let cropperInstance = null;
         let inputTargetGlobal = null;
 
-        // BIND DE EVENTOS AO CARREGAR O DOM
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('btn-login-google').addEventListener('click', fazerLoginGoogle);
             document.getElementById('btn-logout').addEventListener('click', fazerLogout);
@@ -202,7 +201,6 @@
             document.getElementById('produto-form').addEventListener('submit', salvarProduto);
         });
 
-        // MONITORAR AUTENTICAÇÃO
         onAuthStateChanged(auth, async (user) => {
             const loginOverlay = document.getElementById('login-overlay');
             const adminWrapper = document.getElementById('admin-main-wrapper');
@@ -224,7 +222,7 @@
                     }
                 } catch (error) {
                     console.error("Erro ao verificar credenciais:", error);
-                    alert("Aviso do Firebase: Verifique as regras de segurança ou se o domínio do GitHub Pages está autorizado.");
+                    alert("Aviso do Firebase: Verifique as regras do Firestore ou se adicionou cs-code-solutions.github.io nos Authorized Domains do Firebase Authentication.");
                     await signOut(auth);
                     loginOverlay.classList.remove('hidden');
                     adminWrapper.classList.add('hidden');
@@ -235,23 +233,22 @@
             }
         });
 
-        // FUNÇÃO DE LOGIN VIA GOOGLE EXPOSTA NO WINDOW
-        window.fazerLoginGoogle = async function() {
+        async function fazerLoginGoogle() {
             try {
                 await signInWithPopup(auth, googleProvider);
             } catch (error) {
                 console.error("Erro ao realizar login Google:", error);
-                alert("Erro ao conectar com a conta do Google: " + error.message);
+                alert("Erro ao conectar com o Google: " + error.message);
             }
-        };
+        }
 
-        window.fazerLogout = async function() {
+        async function fazerLogout() {
             try {
                 await signOut(auth);
             } catch (error) {
                 console.error("Erro ao sair:", error);
             }
-        };
+        }
 
         async function carregarProdutos() {
             try {
@@ -341,7 +338,7 @@
                 fecharFormulario();
                 carregarProdutos();
             } catch (err) {
-                alert("Erro ao salvar produto: Você pode não ter permissão.");
+                alert("Erro ao salvar produto no Firestore.");
                 console.error(err);
             }
         }
