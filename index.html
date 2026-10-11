@@ -228,11 +228,11 @@
             lista.forEach(p => {
                 const variacoes = p.variacoes && p.variacoes.length > 0 
                     ? p.variacoes 
-                    : [{ foto: 'https://via.placeholder.com/300', descricao: '' }];
-
-                const eIndisponivel = p.indisponivel === true || (p.quantidade !== undefined && p.quantidade <= 0);
+                    : [{ foto: 'https://via.placeholder.com/300', descricao: '', quantidade: p.quantidade || 0, indisponivel: p.indisponivel || false }];
 
                 variacoes.forEach((varItem, indexVar) => {
+                    const eIndisponivel = varItem.indisponivel === true || (varItem.quantidade !== undefined && Number(varItem.quantidade) <= 0);
+
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer relative group";
                     
@@ -265,11 +265,36 @@
             produtoSelecionado = prod;
             indiceFotoAtual = idxInicial;
 
-            const eIndisponivel = prod.indisponivel === true || (prod.quantidade !== undefined && prod.quantidade <= 0);
-
             document.getElementById('modal-categoria').textContent = prod.categoria;
             document.getElementById('modal-nome').textContent = prod.nome;
             document.getElementById('modal-valor').textContent = `R$ ${prod.valor.toFixed(2)}`;
+
+            atualizarCarrossel();
+            document.getElementById('modal-produto').classList.remove('hidden');
+        }
+
+        function fecharModalProduto() {
+            document.getElementById('modal-produto').classList.add('hidden');
+        }
+
+        function atualizarCarrossel() {
+            const variacoes = produtoSelecionado.variacoes && produtoSelecionado.variacoes.length > 0 
+                ? produtoSelecionado.variacoes 
+                : [{ foto: 'https://via.placeholder.com/400', descricao: '', quantidade: 0, indisponivel: false }];
+
+            const varAtual = variacoes[indiceFotoAtual];
+            const eIndisponivel = varAtual.indisponivel === true || (varAtual.quantidade !== undefined && Number(varAtual.quantidade) <= 0);
+
+            const imgDestaque = document.getElementById('modal-img-destaque');
+            imgDestaque.src = varAtual.foto;
+            if (eIndisponivel) {
+                imgDestaque.classList.add('grayscale');
+            } else {
+                imgDestaque.classList.remove('grayscale');
+            }
+
+            document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
+            document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
 
             const btnAdd = document.getElementById('btn-add-carrinho');
             const tarja = document.getElementById('modal-tarja-indisponivel');
@@ -286,39 +311,13 @@
                 tarja.classList.add('hidden');
             }
 
-            atualizarCarrossel();
-            document.getElementById('modal-produto').classList.remove('hidden');
-        }
-
-        function fecharModalProduto() {
-            document.getElementById('modal-produto').classList.add('hidden');
-        }
-
-        function atualizarCarrossel() {
-            const variacoes = produtoSelecionado.variacoes && produtoSelecionado.variacoes.length > 0 
-                ? produtoSelecionado.variacoes 
-                : [{ foto: 'https://via.placeholder.com/400', descricao: '' }];
-
-            const varAtual = variacoes[indiceFotoAtual];
-            const eIndisponivel = produtoSelecionado.indisponivel === true || (produtoSelecionado.quantidade !== undefined && produtoSelecionado.quantidade <= 0);
-
-            const imgDestaque = document.getElementById('modal-img-destaque');
-            imgDestaque.src = varAtual.foto;
-            if (eIndisponivel) {
-                imgDestaque.classList.add('grayscale');
-            } else {
-                imgDestaque.classList.remove('grayscale');
-            }
-
-            document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
-            document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
-
             const minCont = document.getElementById('modal-miniaturas');
             minCont.innerHTML = '';
             variacoes.forEach((v, idx) => {
+                const vIndis = v.indisponivel === true || (v.quantidade !== undefined && Number(v.quantidade) <= 0);
                 const imgThumb = document.createElement('img');
                 imgThumb.src = v.foto;
-                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'} ${eIndisponivel ? 'grayscale' : ''}`;
+                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'} ${vIndis ? 'grayscale' : ''}`;
                 imgThumb.addEventListener('click', () => {
                     indiceFotoAtual = idx;
                     atualizarCarrossel();
@@ -336,10 +335,10 @@
 
         function adicionarAoCarrinhoAtual() {
             if (!produtoSelecionado) return;
-            const eIndisponivel = produtoSelecionado.indisponivel === true || (produtoSelecionado.quantidade !== undefined && produtoSelecionado.quantidade <= 0);
-            if (eIndisponivel) return;
+            const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '', quantidade: 0, indisponivel: false };
+            const eIndisponivel = variacaoAtual.indisponivel === true || (variacaoAtual.quantidade !== undefined && Number(variacaoAtual.quantidade) <= 0);
 
-            const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '' };
+            if (eIndisponivel) return;
 
             const itemExistente = carrinho.find(item => item.id === produtoSelecionado.id && item.variacaoDesc === variacaoAtual.descricao);
 
