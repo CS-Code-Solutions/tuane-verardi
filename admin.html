@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Gestor | Tuane Verardi Confecções</title>
+    <link rel="icon" type="image/png" href="ico.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDF6F6; }
+        .bg-rose-gold { background-color: #B87352; }
+        .bg-rose-gold-dark { background-color: #8C4E33; }
+        .text-rose-gold { color: #B87352; }
+        .border-rose-gold { border-color: #B87352; }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col md:flex-row min-h-screen">
+
+    <!-- MODAL DE RECORTE DE IMAGEM -->
+    <div id="modal-recorte" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-xl w-full space-y-4 border border-rose-200 flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold text-rose-gold">✂️ Recortar e Otimizar Imagem</h3>
+                <button type="button" onclick="fecharModalRecorte()" class="text-gray-400 font-bold">✕</button>
+            </div>
+            <div class="max-h-[60vh] overflow-hidden flex items-center justify-center bg-gray-900 rounded-xl">
+                <img id="imagem-para-recortar" src="" alt="Recorte" class="max-w-full block">
+            </div>
+            <button type="button" onclick="aplicarRecorte()" class="w-full bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl transition">Concluir Recorte</button>
+        </div>
+    </div>
+
+    <!-- TELA DE LOGIN COM GOOGLE -->
+    <div id="login-overlay" class="fixed inset-0 z-50 bg-rose-950/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center space-y-6 border border-rose-200">
+            <img src="logo.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 w-auto object-contain">
+            <div>
+                <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
+                <p class="text-xs text-gray-500">Painel Administrativo de Gestão</p>
+            </div>
+            <button onclick="fazerLoginGoogle()" class="w-full flex items-center justify-center gap-3 border border-gray-300 py-3.5 rounded-xl text-sm font-bold text-gray-700 hover:bg-rose-50 transition shadow-sm">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                Entrar com Conta Google
+            </button>
+        </div>
+    </div>
+
+    <!-- PAINEL PRINCIPAL -->
+    <div id="admin-main-wrapper" class="contents hidden">
+        <aside class="w-full md:w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between">
+            <div class="space-y-6">
+                <img src="logo.png" alt="Tuane Verardi" class="h-16 w-auto mx-auto object-contain">
+                <nav class="space-y-2">
+                    <button onclick="mudarAba('estoque')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left">
+                        📦 Estoque & Produtos
+                    </button>
+                </nav>
+            </div>
+            <div class="space-y-3">
+                <a href="index.html" class="block text-center w-full bg-white text-rose-gold border border-rose-gold font-bold py-2.5 rounded-xl text-xs hover:bg-rose-50 transition">Ver Vitrine ao Vivo ➔</a>
+                <button onclick="fazerLogout()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-xl text-xs transition">Sair do Painel</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10">
+            <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-rose-100 mb-8 gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
+                    <p class="text-gray-500 text-sm">Cadastre seus produtos e crie fotos/variações facilmente</p>
+                </div>
+                <button onclick="abrirFormularioNovo()" class="bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs">
+                    ➕ Novo Produto
+                </button>
+            </div>
+
+            <!-- FORMULÁRIO -->
+            <div id="form-container" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-8">
+                <h3 class="text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
+                <form id="produto-form" onsubmit="salvarProduto(event)" class="space-y-6">
+                    <input type="hidden" id="prod-id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nome do Produto</label>
+                            <input type="text" id="prod-nome" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-rose-gold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Categoria</label>
+                            <select id="prod-categoria" class="w-full px-4 py-2.5 border rounded-xl text-sm bg-white focus:outline-none focus:border-rose-gold">
+                                <option value="cobertores">Cobertores</option>
+                                <option value="coberdron">Coberdron</option>
+                                <option value="lencois">Lençóis</option>
+                                <option value="toalhas">Toalhas</option>
+                                <option value="lingeries">Lingeries</option>
+                                <option value="eletrodomesticos">Eletrodomésticos</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Valor (R$)</label>
+                            <input type="number" step="0.01" id="prod-valor" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-rose-gold">
+                        </div>
+                    </div>
+
+                    <!-- FOTOS E VARIAÇÕES -->
+                    <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos e Variações do Produto</label>
+                            <button type="button" onclick="adicionarCampoFoto()" class="bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition">➕ Adicionar Foto / Variação</button>
+                        </div>
+                        <div id="container-fotos-dinamico" class="space-y-4"></div>
+                    </div>
+
+                    <div class="flex gap-3 pt-4 border-t">
+                        <button type="submit" class="bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-8 py-3 rounded-xl text-sm shadow">Salvar Produto</button>
+                        <button type="button" onclick="fecharFormulario()" class="bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-sm">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TABELA DE PRODUTOS -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-rose-100">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b text-xs font-bold text-gray-400 uppercase">
+                            <th class="py-3">Produto</th>
+                            <th class="py-3">Categoria</th>
+                            <th class="py-3">Valor</th>
+                            <th class="py-3 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-produtos" class="divide-y text-sm"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script type="module">
+        import { db, auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from './firebase-config.js';
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        let listaProdutos = [];
+        let cropperInstance = null;
+        let inputTargetGlobal = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('admin-main-wrapper').classList.remove('hidden');
+                carregarProdutos();
+            } else {
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('admin-main-wrapper').classList.add('hidden');
+            }
+        });
+
+        window.fazerLoginGoogle = () => signInWithPopup(auth, googleProvider);
+        window.fazerLogout = () => signOut(auth);
+
+        async function carregarProdutos() {
+            const snap = await getDocs(collection(db, "produtos"));
+            listaProdutos = [];
+            snap.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
+            renderizarTabela();
+        }
+
+        window.adicionarCampoFoto = function(url = '', descricao = '') {
+            const container = document.getElementById('container-fotos-dinamico');
+            const div = document.createElement('div');
+            div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg">🗑️ Remover</button>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem</label>
+                    <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${url}" placeholder="URL ou faça upload abaixo">
+                    <input type="file" accept="image/*" onchange="iniciarRecorte(this)" class="mt-1 w-full text-[10px] text-gray-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Variação / Descrição da Foto</label>
+                    <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${descricao}" placeholder="Ex: Rosa, Tamanho Casal">
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        window.iniciarRecorte = function(input) {
+            const file = input.files[0];
+            if (!file) return;
+            inputTargetGlobal = input.parentElement.querySelector('.input-foto-url');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('imagem-para-recortar');
+                img.src = e.target.result;
+                document.getElementById('modal-recorte').classList.remove('hidden');
+                if (cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.aplicarRecorte = function() {
+            if (!cropperInstance || !inputTargetGlobal) return;
+            const canvas = cropperInstance.getCroppedCanvas({ width: 800, height: 800 });
+            inputTargetGlobal.value = canvas.toDataURL('image/jpeg', 0.85);
+            fecharModalRecorte();
+        };
+
+        window.fecharModalRecorte = function() {
+            document.getElementById('modal-recorte').classList.add('hidden');
+            if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+        };
+
+        window.salvarProduto = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const nome = document.getElementById('prod-nome').value;
+            const categoria = document.getElementById('prod-categoria').value;
+            const valor = parseFloat(document.getElementById('prod-valor').value);
+
+            let variacoes = [];
+            document.querySelectorAll('#container-fotos-dinamico > div').forEach(div => {
+                const url = div.querySelector('.input-foto-url').value;
+                const desc = div.querySelector('.input-foto-desc').value;
+                if (url) variacoes.push({ foto: url, descricao: desc });
+            });
+
+            const data = { nome, categoria, valor, variacoes };
+
+            if (id) {
+                await updateDoc(doc(db, "produtos", id), data);
+            } else {
+                await addDoc(collection(db, "produtos"), data);
+            }
+
+            fecharFormulario();
+            carregarProdutos();
+        };
+
+        function renderizarTabela() {
+            const tbody = document.getElementById('tabela-produtos');
+            tbody.innerHTML = '';
+            listaProdutos.forEach(p => {
+                const capa = p.variacoes?.[0]?.foto || 'https://via.placeholder.com/50';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-rose-50/30 transition">
+                        <td class="py-3 flex items-center gap-3">
+                            <img src="${capa}" class="w-10 h-10 object-cover rounded-lg border border-rose-200">
+                            <span class="font-bold text-gray-800">${p.nome}</span>
+                        </td>
+                        <td class="py-3 uppercase text-xs font-bold text-gray-500">${p.categoria}</td>
+                        <td class="py-3 font-bold text-rose-gold">R$ ${p.valor.toFixed(2)}</td>
+                        <td class="py-3 text-right space-x-2">
+                            <button onclick="editarProduto('${p.id}')" class="text-rose-gold hover:underline font-bold text-xs">Editar</button>
+                            <button onclick="removerProduto('${p.id}')" class="text-red-500 hover:underline font-bold text-xs">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.abrirFormularioNovo = function() {
+            document.getElementById('prod-id').value = '';
+            document.getElementById('produto-form').reset();
+            document.getElementById('container-fotos-dinamico').innerHTML = '';
+            adicionarCampoFoto();
+            document.getElementById('form-container').classList.remove('hidden');
+        };
+
+        window.fecharFormulario = function() {
+            document.getElementById('form-container').classList.add('hidden');
+        };
+
+        window.editarProduto = function(id) {
+            const p = listaProdutos.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-nome').value = p.nome;
+            document.getElementById('prod-categoria').value = p.categoria;
+            document.getElementById('prod-valor').value = p.valor;
+            const container = document.getElementById('container-fotos-dinamico');
+            container.innerHTML = '';
+            (p.variacoes || []).forEach(v => adicionarCampoFoto(v.foto, v.descricao));
+            document.getElementById('form-container').classList.remove('hidden');
+        };
+
+        window.removerProduto = async function(id) {
+            if (confirm("Deseja apagar este produto?")) {
+                await deleteDoc(doc(db, "produtos", id));
+                carregarProdutos();
+            }
+        };
+    </script>
+</body>
+</html>
