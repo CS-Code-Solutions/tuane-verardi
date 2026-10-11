@@ -11,38 +11,47 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDF6F6; }
         .text-rose-gold { color: #B87352; }
         .bg-rose-gold { background-color: #B87352; }
+        .login-footer p { font-size: 11px; color: #6B7280; }
+        .login-footer a { color: #f28c28; text-decoration: none; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- CABEÇALHO -->
-    <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="cabe.png" alt="Tuane Verardi Confecções" class="h-12 w-auto object-contain">
+    <div>
+        <!-- CABEÇALHO -->
+        <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-rose-100">
+            <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img src="cabe.png" alt="Tuane Verardi Confecções" class="h-12 w-auto object-contain">
+                </div>
+                <a href="admin.html" class="text-xs font-bold text-rose-gold border border-rose-gold px-3 py-1.5 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
             </div>
-            <a href="admin.html" class="text-xs font-bold text-rose-gold border border-rose-gold px-3 py-1.5 rounded-xl hover:bg-rose-50 transition">Painel Gestor</a>
-        </div>
-        
-        <!-- SUB-MENU COM AS CATEGORIAS -->
-        <div class="bg-[#F8E3E3] border-t border-rose-200 overflow-x-auto">
-            <div class="max-w-6xl mx-auto flex gap-2 p-2 text-xs font-bold whitespace-nowrap">
-                <button onclick="filtrarCategoria('todos')" class="btn-cat px-4 py-2 rounded-xl bg-rose-gold text-white shadow-sm">Todos</button>
-                <button onclick="filtrarCategoria('cobertores')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Cobertores</button>
-                <button onclick="filtrarCategoria('coberdron')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Coberdron</button>
-                <button onclick="filtrarCategoria('lencois')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Lençóis</button>
-                <button onclick="filtrarCategoria('toalhas')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Toalhas</button>
-                <button onclick="filtrarCategoria('lingeries')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Lingeries</button>
-                <button onclick="filtrarCategoria('eletrodomesticos')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Eletrodomésticos</button>
-                <button onclick="filtrarCategoria('outros')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Outros</button>
+            
+            <!-- SUB-MENU COM AS CATEGORIAS -->
+            <div class="bg-[#F8E3E3] border-t border-rose-200 overflow-x-auto">
+                <div class="max-w-6xl mx-auto flex gap-2 p-2 text-xs font-bold whitespace-nowrap">
+                    <button onclick="filtrarCategoria('todos')" class="btn-cat px-4 py-2 rounded-xl bg-rose-gold text-white shadow-sm">Todos</button>
+                    <button onclick="filtrarCategoria('cobertores')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Cobertores</button>
+                    <button onclick="filtrarCategoria('coberdron')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Coberdron</button>
+                    <button onclick="filtrarCategoria('lencois')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Lençóis</button>
+                    <button onclick="filtrarCategoria('toalhas')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Toalhas</button>
+                    <button onclick="filtrarCategoria('lingeries')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Lingeries</button>
+                    <button onclick="filtrarCategoria('eletrodomesticos')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Eletrodomésticos</button>
+                    <button onclick="filtrarCategoria('outros')" class="btn-cat px-4 py-2 rounded-xl text-gray-700 hover:bg-white/50">Outros</button>
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- VITRINE -->
-    <main class="max-w-6xl mx-auto p-4 md:p-6">
-        <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-    </main>
+        <!-- VITRINE -->
+        <main class="max-w-6xl mx-auto p-4 md:p-6">
+            <div id="grid-produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        </main>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-white border-t border-rose-100 py-6 text-center login-footer">
+        <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
+    </footer>
 
     <script type="module">
         import { db } from './firebase-config.js';
