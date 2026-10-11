@@ -58,7 +58,7 @@
         </main>
     </div>
 
-    <!-- MODAL DE DETALHES DO PRODUTO / CARROSSEL -->
+    <!-- MODAL DE DETALHES DO PRODUTO -->
     <div id="modal-produto" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
             <button id="btn-fechar-modal-prod" class="absolute top-3 right-3 z-10 bg-black/50 text-white w-8 h-8 rounded-full font-bold hover:bg-black transition">✕</button>
@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <!-- MODAL FLUTUANTE DO CARRINHO / CHECKOUT -->
+    <!-- MODAL DO CARRINHO / CHECKOUT -->
     <div id="modal-carrinho" class="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col relative max-h-[92vh]">
             
@@ -127,6 +127,11 @@
                     </div>
 
                     <div>
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">WhatsApp de Contato *</label>
+                        <input type="tel" id="cli-telefone" required class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Ex: (51) 99999-9999">
+                    </div>
+
+                    <div>
                         <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Endereço de Entrega *</label>
                         <input type="text" id="cli-endereco" required class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Rua, Número, Bairro, Cidade">
                     </div>
@@ -134,7 +139,7 @@
                     <div>
                         <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Forma de Pagamento *</label>
                         <select id="cli-pagamento" class="w-full px-3.5 py-2 border rounded-xl text-xs bg-white focus:outline-none focus:border-rose-gold">
-                            <option value="Pix">Pix</option>
+                            <option value="Pix">Pix (Chave informada no Wpp)</option>
                             <option value="Cartão de Crédito">Cartão de Crédito</option>
                             <option value="Cartão de Débito">Cartão de Débito</option>
                             <option value="Dinheiro na Entrega">Dinheiro na Entrega</option>
@@ -143,13 +148,13 @@
 
                     <div>
                         <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Observações (Opcional)</label>
-                        <textarea id="cli-obs" rows="2" class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Ex: Deixar na portaria"></textarea>
+                        <textarea id="cli-obs" rows="2" class="w-full px-3.5 py-2 border rounded-xl text-xs focus:outline-none focus:border-rose-gold" placeholder="Ex: Deixar na portaria ou troco para R$ 100"></textarea>
                     </div>
 
                     <div class="pt-2 flex gap-2">
-                        <button id="btn-voltar-carrinho" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">✏️ Editar Carrinho</button>
-                        <button type="submit" class="w-1/2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer flex items-center justify-center gap-1">
-                            <span>Concluir via WhatsApp</span>
+                        <button id="btn-voltar-carrinho" type="button" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs transition cursor-pointer">✏️ Voltar</button>
+                        <button type="submit" id="btn-finalizar-pedido" class="w-1/2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl text-xs shadow transition cursor-pointer flex items-center justify-center gap-1">
+                            <span>Enviar via WhatsApp ➔</span>
                         </button>
                     </div>
                 </form>
@@ -165,12 +170,11 @@
 
     <script type="module">
         import { db } from './firebase-config.js';
-        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { collection, getDocs, addDoc, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let todosProdutos = [];
         let produtoSelecionado = null;
         let indiceFotoAtual = 0;
-        
         let carrinho = JSON.parse(localStorage.getItem('tuane_carrinho')) || [];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -190,7 +194,7 @@
             document.getElementById('btn-avancar-checkout').addEventListener('click', avancarParaCheckout);
             document.getElementById('btn-voltar-carrinho').addEventListener('click', voltarParaItens);
 
-            document.getElementById('form-cliente-whatsapp').addEventListener('submit', finalizarCompraWhatsApp);
+            document.getElementById('form-cliente-whatsapp').addEventListener('submit', processarPedidoEEnviar);
         });
 
         async function carregarVitrine() {
@@ -228,14 +232,13 @@
             lista.forEach(p => {
                 const variacoes = p.variacoes && p.variacoes.length > 0 
                     ? p.variacoes 
-                    : [{ foto: 'https://via.placeholder.com/300', descricao: '' }];
-
-                const eIndisponivel = p.indisponivel === true || (p.quantidade !== undefined && p.quantidade <= 0);
+                    : [{ foto: 'https://via.placeholder.com/300', descricao: '', quantidade: p.quantidade || 0, indisponivel: p.indisponivel || false }];
 
                 variacoes.forEach((varItem, indexVar) => {
+                    const eIndisponivel = varItem.indisponivel === true || (varItem.quantidade !== undefined && varItem.quantidade <= 0);
+
                     const card = document.createElement('div');
                     card.className = "bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer relative group";
-                    
                     const descExibicao = varItem.descricao ? ` - ${varItem.descricao}` : '';
 
                     card.innerHTML = `
@@ -264,12 +267,33 @@
         function abrirModalProduto(prod, idxInicial = 0) {
             produtoSelecionado = prod;
             indiceFotoAtual = idxInicial;
+            atualizarCarrossel();
+            document.getElementById('modal-produto').classList.remove('hidden');
+        }
 
-            const eIndisponivel = prod.indisponivel === true || (prod.quantidade !== undefined && prod.quantidade <= 0);
+        function fecharModalProduto() {
+            document.getElementById('modal-produto').classList.add('hidden');
+        }
 
-            document.getElementById('modal-categoria').textContent = prod.categoria;
-            document.getElementById('modal-nome').textContent = prod.nome;
-            document.getElementById('modal-valor').textContent = `R$ ${prod.valor.toFixed(2)}`;
+        function atualizarCarrossel() {
+            const variacoes = produtoSelecionado.variacoes && produtoSelecionado.variacoes.length > 0 
+                ? produtoSelecionado.variacoes 
+                : [{ foto: 'https://via.placeholder.com/400', descricao: '', quantidade: 0, indisponivel: false }];
+
+            const varAtual = variacoes[indiceFotoAtual];
+            const eIndisponivel = varAtual.indisponivel === true || (varAtual.quantidade !== undefined && varAtual.quantidade <= 0);
+
+            document.getElementById('modal-categoria').textContent = produtoSelecionado.categoria;
+            document.getElementById('modal-nome').textContent = produtoSelecionado.nome;
+            document.getElementById('modal-valor').textContent = `R$ ${produtoSelecionado.valor.toFixed(2)}`;
+
+            const imgDestaque = document.getElementById('modal-img-destaque');
+            imgDestaque.src = varAtual.foto;
+            if (eIndisponivel) imgDestaque.classList.add('grayscale');
+            else imgDestaque.classList.remove('grayscale');
+
+            document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
+            document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
 
             const btnAdd = document.getElementById('btn-add-carrinho');
             const tarja = document.getElementById('modal-tarja-indisponivel');
@@ -286,39 +310,13 @@
                 tarja.classList.add('hidden');
             }
 
-            atualizarCarrossel();
-            document.getElementById('modal-produto').classList.remove('hidden');
-        }
-
-        function fecharModalProduto() {
-            document.getElementById('modal-produto').classList.add('hidden');
-        }
-
-        function atualizarCarrossel() {
-            const variacoes = produtoSelecionado.variacoes && produtoSelecionado.variacoes.length > 0 
-                ? produtoSelecionado.variacoes 
-                : [{ foto: 'https://via.placeholder.com/400', descricao: '' }];
-
-            const varAtual = variacoes[indiceFotoAtual];
-            const eIndisponivel = produtoSelecionado.indisponivel === true || (produtoSelecionado.quantidade !== undefined && produtoSelecionado.quantidade <= 0);
-
-            const imgDestaque = document.getElementById('modal-img-destaque');
-            imgDestaque.src = varAtual.foto;
-            if (eIndisponivel) {
-                imgDestaque.classList.add('grayscale');
-            } else {
-                imgDestaque.classList.remove('grayscale');
-            }
-
-            document.getElementById('modal-variacao-desc').textContent = varAtual.descricao ? `Variação: ${varAtual.descricao}` : '';
-            document.getElementById('carrossel-contador').textContent = `${indiceFotoAtual + 1} / ${variacoes.length}`;
-
             const minCont = document.getElementById('modal-miniaturas');
             minCont.innerHTML = '';
             variacoes.forEach((v, idx) => {
+                const vIndis = v.indisponivel === true || (v.quantidade !== undefined && v.quantidade <= 0);
                 const imgThumb = document.createElement('img');
                 imgThumb.src = v.foto;
-                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'} ${eIndisponivel ? 'grayscale' : ''}`;
+                imgThumb.className = `w-10 h-10 md:w-12 md:h-12 rounded-lg object-cover cursor-pointer border-2 ${idx === indiceFotoAtual ? 'border-rose-gold' : 'border-transparent opacity-60'} ${vIndis ? 'grayscale' : ''}`;
                 imgThumb.addEventListener('click', () => {
                     indiceFotoAtual = idx;
                     atualizarCarrossel();
@@ -336,10 +334,10 @@
 
         function adicionarAoCarrinhoAtual() {
             if (!produtoSelecionado) return;
-            const eIndisponivel = produtoSelecionado.indisponivel === true || (produtoSelecionado.quantidade !== undefined && produtoSelecionado.quantidade <= 0);
+            const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '', quantidade: 0, indisponivel: false };
+            const eIndisponivel = variacaoAtual.indisponivel === true || (variacaoAtual.quantidade !== undefined && variacaoAtual.quantidade <= 0);
+            
             if (eIndisponivel) return;
-
-            const variacaoAtual = produtoSelecionado.variacoes?.[indiceFotoAtual] || { foto: '', descricao: '' };
 
             const itemExistente = carrinho.find(item => item.id === produtoSelecionado.id && item.variacaoDesc === variacaoAtual.descricao);
 
@@ -352,6 +350,7 @@
                     valor: produtoSelecionado.valor,
                     foto: variacaoAtual.foto || produtoSelecionado.variacoes?.[0]?.foto || '',
                     variacaoDesc: variacaoAtual.descricao || '',
+                    variacaoIndex: indiceFotoAtual,
                     quantidade: 1
                 });
             }
@@ -460,10 +459,16 @@
             document.getElementById('etapa-carrinho-itens').classList.remove('hidden');
         }
 
-        function finalizarCompraWhatsApp(e) {
+        // SALVA O PEDIDO NO FIRESTORE + DÁ BAIXA NO ESTOQUE + ENVIA PARA O WHATSAPP
+        async function processarPedidoEEnviar(e) {
             e.preventDefault();
 
+            const btnSubmit = document.getElementById('btn-finalizar-pedido');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = "<span>Gravando Pedido...</span>";
+
             const nome = document.getElementById('cli-nome').value;
+            const telefone = document.getElementById('cli-telefone').value;
             const endereco = document.getElementById('cli-endereco').value;
             const pagamento = document.getElementById('cli-pagamento').value;
             const obs = document.getElementById('cli-obs').value;
@@ -475,30 +480,76 @@
                 const subtotal = item.valor * item.quantidade;
                 valorTotal += subtotal;
                 listaProdutosTexto += `${idx + 1}. *${item.nome}*\n`;
-                if (item.variacaoDesc) {
-                    listaProdutosTexto += `   • Variação: ${item.variacaoDesc}\n`;
-                }
+                if (item.variacaoDesc) listaProdutosTexto += `   • Variação: ${item.variacaoDesc}\n`;
                 listaProdutosTexto += `   • Qtd: ${item.quantidade}x | Valor: R$ ${item.valor.toFixed(2)}\n\n`;
             });
 
-            let mensagem = `Olá! Gostaria de fazer o seguinte pedido:\n\n`;
-            mensagem += `👤 *DADOS DO CLIENTE*\n`;
-            mensagem += `• Nome: ${nome}\n`;
-            mensagem += `• Endereço: ${endereco}\n`;
-            mensagem += `• Forma de Pagamento: ${pagamento}\n`;
-            if (obs) mensagem += `• Obs: ${obs}\n`;
-            mensagem += `\n🛍️ *PRODUTOS SELECIONADOS*\n${listaProdutosTexto}`;
-            mensagem += `💰 *VALOR TOTAL:* R$ ${valorTotal.toFixed(2)}\n\n`;
-            mensagem += `Aguardo retorno para confirmação do pedido!`;
+            try {
+                // 1. DAR BAIXA AUTOMÁTICA NO ESTOQUE DO FIRESTORE
+                for (const item of carrinho) {
+                    const prodRef = doc(db, "produtos", item.id);
+                    const prodSnap = await getDoc(prodRef);
 
-            const numeroWhatsApp = "5551991935081";
-            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensagem)}`;
+                    if (prodSnap.exists()) {
+                        const prodData = prodSnap.data();
+                        if (prodData.variacoes && prodData.variacoes.length > 0) {
+                            const idx = prodData.variacoes.findIndex(v => v.descricao === item.variacaoDesc);
+                            if (idx !== -1) {
+                                const qtdAtual = prodData.variacoes[idx].quantidade || 0;
+                                const novaQtd = Math.max(0, qtdAtual - item.quantidade);
+                                prodData.variacoes[idx].quantidade = novaQtd;
+                                prodData.variacoes[idx].indisponivel = novaQtd <= 0;
+                                await updateDoc(prodRef, { variacoes: prodData.variacoes });
+                            }
+                        }
+                    }
+                }
 
-            carrinho = [];
-            salvarCarrinho();
-            fecharCarrinho();
+                // 2. REGISTRAR O PEDIDO NA COLEÇÃO 'pedidos' DO FIRESTORE
+                const pedidoData = {
+                    cliente: {
+                        nome,
+                        telefone,
+                        endereco,
+                        pagamento,
+                        obs
+                    },
+                    itens: carrinho,
+                    valorTotal: valorTotal,
+                    status: 'Pendente',
+                    dataCriacao: serverTimestamp()
+                };
 
-            window.open(urlWhatsApp, '_blank');
+                await addDoc(collection(db, "pedidos"), pedidoData);
+
+                // 3. ENVIAR PARA O WHATSAPP
+                let mensagem = `Olá! Gostaria de fazer o seguinte pedido:\n\n`;
+                mensagem += `👤 *DADOS DO CLIENTE*\n`;
+                mensagem += `• Nome: ${nome}\n`;
+                mensagem += `• Telefone: ${telefone}\n`;
+                mensagem += `• Endereço: ${endereco}\n`;
+                mensagem += `• Forma de Pagamento: ${pagamento}\n`;
+                if (obs) mensagem += `• Obs: ${obs}\n`;
+                mensagem += `\n🛍️ *PRODUTOS SELECIONADOS*\n${listaProdutosTexto}`;
+                mensagem += `💰 *VALOR TOTAL:* R$ ${valorTotal.toFixed(2)}\n\n`;
+                mensagem += `Aguardo retorno para confirmação do pedido!`;
+
+                const numeroWhatsApp = "5551991935081";
+                const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensagem)}`;
+
+                carrinho = [];
+                salvarCarrinho();
+                fecharCarrinho();
+
+                window.open(urlWhatsApp, '_blank');
+
+            } catch (error) {
+                console.error("Erro ao registrar pedido:", error);
+                alert("Ocorreu um erro ao gravar seu pedido. Tente novamente.");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = "<span>Enviar via WhatsApp ➔</span>";
+            }
         }
 
         carregarVitrine();
