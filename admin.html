@@ -10,14 +10,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; backdrop-blur-md
-            background-color: #FDF6F6;
-            background-image: url('fundo.jpeg');
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-image: url('fundo.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
         .bg-rose-gold { background-color: #B87352; }
@@ -26,16 +27,8 @@
         .border-rose-gold { border-color: #B87352; }
 
         .box-led-rosegold {
-            border: 2px solid rgba(184, 115, 82, 0.3);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease-in-out;
-        }
-        .box-led-rosegold:hover, 
-        .box-led-rosegold:active, 
-        .box-led-rosegold:focus-within {
-            border-color: #B87352;
-            box-shadow: 0 0 20px rgba(184, 115, 82, 0.6), 0 0 35px rgba(184, 115, 82, 0.3);
-            transform: translateY(-2px);
+            border: 2px solid rgba(184, 115, 82, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
         }
 
         .login-footer p {
@@ -66,7 +59,7 @@
 
     <!-- TELA DE LOGIN COM GOOGLE -->
     <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="bg-white/5 backdrop-blur-md rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold shadow-2xl">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
             <div>
                 <h2 class="text-2xl font-extrabold text-rose-gold">Tuane Verardi</h2>
@@ -188,7 +181,6 @@
                                 <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos e Variações do Produto</label>
                                 <button type="button" id="btn-add-foto" class="w-full sm:w-auto bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
                             </div>
-                            <!-- AS NOVAS VARIAÇÕES AGORA ENTRAM NO INÍCIO AQUI -->
                             <div id="container-fotos-dinamico" class="space-y-4"></div>
                         </div>
 
@@ -366,7 +358,6 @@
             }
         }
 
-        // ALTERAÇÃO CRUCIAL: INSINUA A NOVA VARIAÇÃO NO INÍCIO DO CONTAINER (PREPEND)
         function adicionarCampoFoto(url = '', descricao = '') {
             const container = document.getElementById('container-fotos-dinamico');
             const div = document.createElement('div');
@@ -388,7 +379,6 @@
                 iniciarRecorte(this);
             });
 
-            // Adiciona no topo em vez do final
             container.prepend(div);
         }
 
@@ -526,7 +516,6 @@
 
             const container = document.getElementById('container-fotos-dinamico');
             container.innerHTML = '';
-            // Preenche na ordem original
             (p.variacoes || []).forEach(v => {
                 const div = document.createElement('div');
                 div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-2 gap-4 relative group shadow-sm";
