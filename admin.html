@@ -9,29 +9,96 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; background-color: #121212; min-height: 100vh; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            min-height: 100vh;
+        }
+
         .bg-rose-gold { background-color: #B87352; }
         .bg-rose-gold-dark { background-color: #8C4E33; }
         .text-rose-gold { color: #B87352; }
         .border-rose-gold { border-color: #B87352; }
 
         #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
-            display: flex; justify-content: center; align-items: center; z-index: 9999;
-            padding: 15px; box-sizing: border-box; background-color: #121212; overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 15px;
+            box-sizing: border-box;
+            background-color: #121212;
+            overflow: hidden;
         }
-        #bg-login-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; z-index: 1; }
-        #login-overlay::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); z-index: 2; pointer-events: none; }
-        .box-led-rosegold { position: relative; z-index: 3; border: 2px solid rgba(184, 115, 82, 0.5); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); }
-        .login-footer p { font-size: 11px; color: #6B7280; }
-        .login-footer a { color: #f28c28; text-decoration: none; }
+
+        #bg-login-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 1;
+        }
+
+        #login-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .box-led-rosegold {
+            position: relative;
+            z-index: 3;
+            border: 2px solid rgba(184, 115, 82, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .login-footer p {
+            font-size: 11px;
+            color: #6B7280;
+        }
+        .login-footer a {
+            color: #f28c28;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen">
 
+    <!-- MODAL DE RECORTE DE IMAGEM -->
+    <div id="modal-recorte" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-xl w-full space-y-4 border border-rose-200 flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold text-rose-gold">✂️ Recortar e Otimizar Imagem</h3>
+                <button type="button" id="btn-fechar-modal" class="text-gray-400 font-bold">✕</button>
+            </div>
+            <div class="max-h-[60vh] overflow-hidden flex items-center justify-center bg-gray-900 rounded-xl">
+                <img id="imagem-para-recortar" src="" alt="Recorte" class="max-w-full block">
+            </div>
+            <button type="button" id="btn-aplicar-recorte" class="w-full bg-rose-gold hover:bg-rose-gold-dark text-white font-bold py-3 rounded-xl transition">Concluir Recorte</button>
+        </div>
+    </div>
+
     <!-- TELA DE LOGIN -->
     <div id="login-overlay">
-        <img id="bg-login-img" src="fundo.jpg" alt="Fundo Tuane Verardi">
+        <img id="bg-login-img" src="login.jpeg" alt="Fundo Tuane Verardi">
+
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-6 box-led-rosegold">
             <img src="cabe2.png" alt="Tuane Verardi Confecções" class="mx-auto h-24 md:h-28 w-auto object-contain">
             <div>
@@ -43,7 +110,7 @@
                 Entrar com Conta Google
             </button>
             <div class="login-footer pt-2 border-t border-rose-100">
-                <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions" target="_blank"><strong>CS Code Solutions</strong></a></p>
+                <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
             </div>
         </div>
     </div>
@@ -51,17 +118,25 @@
     <!-- PAINEL PRINCIPAL -->
     <div id="admin-main-wrapper" class="w-full min-h-screen flex flex-col md:flex-row" style="display: none;">
         
-        <aside id="sidebar-admin" class="w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen">
+        <header class="md:hidden bg-[#F8E3E3] border-b border-rose-200 p-3 flex justify-between items-center sticky top-0 z-40">
+            <div class="flex items-center gap-2">
+                <img src="cabe2.png" alt="Logo" class="h-12 w-auto">
+                <span class="font-extrabold text-sm text-rose-gold">Painel Gestor</span>
+            </div>
+            <button id="btn-toggle-menu-mobile" class="p-2 text-rose-gold font-extrabold text-2xl focus:outline-none">
+                ☰
+            </button>
+        </header>
+
+        <aside id="sidebar-admin" class="fixed md:static inset-y-0 left-0 z-50 w-64 bg-[#F8E3E3] border-r border-rose-200 text-gray-800 p-6 space-y-6 flex flex-col justify-between min-h-screen transition-transform transform -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
             <div class="space-y-6">
-                <img src="cabe2.png" alt="Tuane Verardi" class="h-24 w-auto mx-auto object-contain">
+                <div class="flex justify-between items-center md:block">
+                    <img src="cabe2.png" alt="Tuane Verardi" class="h-24 md:h-28 w-auto mx-auto object-contain">
+                    <button id="btn-fechar-menu-mobile" class="md:hidden text-gray-500 font-bold text-xl">✕</button>
+                </div>
+                
                 <nav class="space-y-2">
-                    <button id="nav-dashboard" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
-                        📊 Dashboard & Lucro
-                    </button>
-                    <button id="nav-pedidos" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
-                        📋 Pedidos Recebidos
-                    </button>
-                    <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
+                    <button id="nav-estoque" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs">
                         📦 Estoque & Produtos
                     </button>
                     <button id="nav-vitrine" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs">
@@ -73,65 +148,41 @@
             <div class="space-y-3">
                 <a href="index.html" target="_blank" class="block text-center w-full bg-white text-rose-gold border border-rose-gold font-bold py-2.5 rounded-xl text-xs hover:bg-rose-50 transition">Ver Vitrine ao Vivo ➔</a>
                 <button type="button" id="btn-logout" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">Sair do Painel</button>
+                
+                <div class="pt-3 border-t border-rose-200/60 text-center login-footer">
+                    <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
+                </div>
             </div>
         </aside>
 
-        <main class="flex-1 p-4 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm">
+        <div id="overlay-menu-mobile" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
+        <main class="flex-1 p-3 md:p-10 flex flex-col justify-between min-h-screen bg-white/90 backdrop-blur-sm w-full overflow-x-hidden">
             <div>
-                <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-rose-100 mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-rose-100 mb-4 md:mb-6 gap-3">
                     <div>
-                        <h2 id="titulo-secao" class="text-xl font-bold text-rose-gold">Dashboard Financeiro</h2>
-                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Resumo de investimento em estoque, faturamento e mais vendidos</p>
+                        <h2 id="titulo-secao" class="text-base md:text-xl font-bold text-rose-gold">Gestão de Estoque</h2>
+                        <p id="subtitulo-secao" class="text-gray-500 text-xs">Cadastre seus produtos e ajuste individualmente o estoque de cada variação</p>
                     </div>
-                    <button type="button" id="btn-abrir-novo" class="bg-rose-gold text-white font-bold px-5 py-3 rounded-xl shadow text-xs hidden">➕ Novo Produto</button>
+                    <button type="button" id="btn-abrir-novo" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-5 py-3 rounded-xl shadow transition text-xs cursor-pointer text-center">
+                        ➕ Novo Produto
+                    </button>
                 </div>
 
-                <!-- SEÇÃO DASHBOARD (CARDS MÉTRICAS) -->
-                <div id="secao-dashboard" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-2">
-                            <span class="text-xs font-bold text-gray-400 uppercase">💰 Total Investido (Estoque)</span>
-                            <h3 id="dash-total-investido" class="text-2xl font-black text-rose-gold">R$ 0,00</h3>
-                            <p class="text-[11px] text-gray-500">Valor de custo das mercadorias em estoque</p>
-                        </div>
-                        <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-2">
-                            <span class="text-xs font-bold text-gray-400 uppercase">📈 Retorno Total (Vendas)</span>
-                            <h3 id="dash-total-vendas" class="text-2xl font-black text-green-600">R$ 0,00</h3>
-                            <p class="text-[11px] text-gray-500">Faturamento dos pedidos concluídos</p>
-                        </div>
-                        <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-2">
-                            <span class="text-xs font-bold text-gray-400 uppercase">💵 Lucro Estimado</span>
-                            <h3 id="dash-lucro-estimado" class="text-2xl font-black text-blue-600">R$ 0,00</h3>
-                            <p class="text-[11px] text-gray-500">Retorno em vendas − Custo das mercadorias</p>
-                        </div>
-                    </div>
-
-                    <!-- PRODUTOS MAIS VENDIDOS -->
-                    <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm space-y-4">
-                        <h3 class="text-base font-extrabold text-gray-800">🏆 Produtos e Variações Mais Vendidos</h3>
-                        <div id="container-mais-vendidos" class="divide-y divide-gray-100">
-                            <!-- Preenchido via JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SEÇÃO DE PEDIDOS -->
-                <div id="secao-pedidos-container" class="space-y-4 hidden"></div>
-
-                <!-- FORMULÁRIO DE PRODUTO -->
-                <div id="form-container" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-rose-200 mb-6">
-                    <h3 class="text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
-                    <form id="produto-form" class="space-y-6">
+                <!-- FORMULÁRIO -->
+                <div id="form-container" class="hidden bg-white p-4 md:p-8 rounded-2xl shadow-lg border border-rose-200 mb-6">
+                    <h3 class="text-base md:text-lg font-bold text-rose-gold mb-4">Cadastrar / Editar Produto</h3>
+                    <form id="produto-form" class="space-y-4 md:space-y-6">
                         <input type="hidden" id="prod-id">
                         
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Nome do Produto</label>
-                                <input type="text" id="prod-nome" required class="w-full px-3.5 py-2.5 border rounded-xl text-sm">
+                                <input type="text" id="prod-nome" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Categoria</label>
-                                <select id="prod-categoria" class="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-white">
+                                <select id="prod-categoria" class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm bg-white focus:outline-none focus:border-rose-gold">
                                     <option value="cobertores">Cobertores</option>
                                     <option value="coberdron">Coberdron</option>
                                     <option value="lencois">Lençóis</option>
@@ -142,138 +193,443 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Valor de Venda (R$)</label>
-                                <input type="number" step="0.01" id="prod-valor" required class="w-full px-3.5 py-2.5 border rounded-xl text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Custo de Aquisição (R$)</label>
-                                <input type="number" step="0.01" id="prod-custo" required class="w-full px-3.5 py-2.5 border rounded-xl text-sm" placeholder="Ex: 50.00">
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Valor (R$)</label>
+                                <input type="number" step="0.01" id="prod-valor" required class="w-full px-3.5 py-2.5 border rounded-xl text-xs md:text-sm focus:outline-none focus:border-rose-gold">
                             </div>
                         </div>
 
+                        <div class="bg-rose-50 p-3 md:p-4 rounded-xl border border-rose-200 flex items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-xs font-extrabold text-rose-gold uppercase">Exibir na Vitrine da Loja</h4>
+                                <p class="text-[10px] md:text-[11px] text-gray-500">Marque para disponibilizar este produto no catálogo</p>
+                            </div>
+                            
+                            <label for="prod-vitrine" class="flex items-center cursor-pointer select-none">
+                                <div class="relative">
+                                    <input type="checkbox" id="prod-vitrine" class="sr-only" checked>
+                                    <div class="block bg-gray-300 w-12 h-7 rounded-full transition-colors duration-300 bg-rose-gold" id="toggle-bg"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-5" id="toggle-dot"></div>
+                                </div>
+                            </label>
+                        </div>
+
                         <!-- FOTOS E VARIAÇÕES -->
-                        <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 space-y-4">
-                            <div class="flex justify-between items-center">
-                                <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos, Variações e Estoque</label>
-                                <button type="button" id="btn-add-foto" class="bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl">➕ Adicionar Variação</button>
+                        <div class="bg-rose-50/50 p-3 md:p-5 rounded-2xl border border-rose-200 space-y-4">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <label class="block text-xs font-bold text-rose-gold uppercase">📸 Fotos, Variações e Estoque Individual</label>
+                                <button type="button" id="btn-add-foto" class="w-full sm:w-auto bg-rose-gold text-white text-xs font-bold px-3 py-2 rounded-xl hover:bg-rose-gold-dark transition cursor-pointer">➕ Adicionar Foto / Variação</button>
                             </div>
                             <div id="container-fotos-dinamico" class="space-y-4"></div>
                         </div>
 
-                        <div class="flex gap-3 pt-4 border-t">
-                            <button type="submit" class="bg-rose-gold text-white font-bold px-8 py-3 rounded-xl text-sm">Salvar Produto</button>
-                            <button type="button" id="btn-cancelar-form" class="bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-sm">Cancelar</button>
+                        <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                            <button type="submit" class="w-full sm:w-auto bg-rose-gold hover:bg-rose-gold-dark text-white font-bold px-8 py-3 rounded-xl text-xs md:text-sm shadow cursor-pointer">Salvar Produto</button>
+                            <button type="button" id="btn-cancelar-form" class="w-full sm:w-auto bg-gray-100 text-gray-700 font-bold px-6 py-3 rounded-xl text-xs md:text-sm cursor-pointer">Cancelar</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- LISTA DE PRODUTOS -->
-                <div id="container-lista-produtos" class="space-y-3 hidden"></div>
+                <!-- LISTA DE PRODUTOS/VARIAÇÕES -->
+                <div id="container-lista-produtos" class="space-y-3"></div>
             </div>
+
+            <footer class="mt-8 pt-6 border-t border-rose-200 text-center text-xs text-gray-500 login-footer">
+                <p>&copy; 2026 | Powered by <a href="https://www.instagram.com/cs_code_solutions?exln=Ym1mNDMzYTYxa3d6" target="_blank"><strong>CS Code Solutions</strong></a></p>
+            </footer>
         </main>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script type="module">
         import { db, auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         let listaProdutos = [];
-        let listaPedidos = [];
-        let abaAtual = 'dashboard';
+        let modoFiltroVitrine = false;
+        let cropperInstance = null;
+        let inputTargetGlobal = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('btn-login-google').addEventListener('click', () => signInWithPopup(auth, googleProvider));
-            document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
-            
-            document.getElementById('nav-dashboard').addEventListener('click', () => alternarAba('dashboard'));
-            document.getElementById('nav-pedidos').addEventListener('click', () => alternarAba('pedidos'));
-            document.getElementById('nav-estoque').addEventListener('click', () => alternarAba('estoque'));
-            document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba('vitrine'));
-        });
+            document.getElementById('btn-login-google').addEventListener('click', fazerLoginGoogle);
+            document.getElementById('btn-logout').addEventListener('click', fazerLogout);
+            document.getElementById('btn-abrir-novo').addEventListener('click', abrirFormularioNovo);
+            document.getElementById('btn-cancelar-form').addEventListener('click', fecharFormulario);
+            document.getElementById('btn-add-foto').addEventListener('click', () => adicionarCampoFoto());
+            document.getElementById('btn-fechar-modal').addEventListener('click', fecharModalRecorte);
+            document.getElementById('btn-aplicar-recorte').addEventListener('click', aplicarRecorte);
+            document.getElementById('produto-form').addEventListener('submit', salvarProduto);
 
-        function alternarAba(aba) {
-            abaAtual = aba;
-            document.getElementById('secao-dashboard').classList.toggle('hidden', aba !== 'dashboard');
-            document.getElementById('secao-pedidos-container').classList.toggle('hidden', aba !== 'pedidos');
-            document.getElementById('container-lista-produtos').classList.toggle('hidden', aba !== 'estoque' && aba !== 'vitrine');
+            document.getElementById('nav-estoque').addEventListener('click', () => alternarAba(false));
+            document.getElementById('nav-vitrine').addEventListener('click', () => alternarAba(true));
 
-            if (aba === 'dashboard') calcularMetricasDashboard();
-            if (aba === 'pedidos') carregarPedidos();
-            if (aba === 'estoque' || aba === 'vitrine') renderizarProdutosAdmin();
-        }
+            const toggleInput = document.getElementById('prod-vitrine');
+            const toggleBg = document.getElementById('toggle-bg');
+            const toggleDot = document.getElementById('toggle-dot');
 
-        async function carregarDados() {
-            const snapProds = await getDocs(collection(db, "produtos"));
-            listaProdutos = [];
-            snapProds.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
-
-            const snapPeds = await getDocs(collection(db, "pedidos"));
-            listaPedidos = [];
-            snapPeds.forEach(d => listaPedidos.push({ id: d.id, ...d.data() }));
-
-            calcularMetricasDashboard();
-        }
-
-        function calcularMetricasDashboard() {
-            let totalInvestidoEstoque = 0;
-            let totalVendasConcluidas = 0;
-            let custoTotalVendido = 0;
-            let contagemVendasMap = {};
-
-            // 1. CALCULA INVESTIMENTO EM ESTOQUE ATUAL
-            listaProdutos.forEach(p => {
-                const custoUn = p.custo || 0;
-                (p.variacoes || []).forEach(v => {
-                    const qtd = v.quantidade || 0;
-                    totalInvestidoEstoque += (qtd * custoUn);
-                });
+            toggleInput.addEventListener('change', () => {
+                if (toggleInput.checked) {
+                    toggleBg.className = 'block bg-rose-gold w-12 h-7 rounded-full transition-colors duration-300';
+                    toggleDot.className = 'dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-5';
+                } else {
+                    toggleBg.className = 'block bg-gray-300 w-12 h-7 rounded-full transition-colors duration-300';
+                    toggleDot.className = 'dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 transform translate-x-0';
+                }
             });
 
-            // 2. CALCULA VENDAS E PRODUTOS MAIS VENDIDOS
-            listaPedidos.forEach(ped => {
-                if (ped.status === 'Concluído' || ped.status === 'Pendente') {
-                    totalVendasConcluidas += (ped.valorTotal || 0);
+            const btnMenuMob = document.getElementById('btn-toggle-menu-mobile');
+            const btnFecharMob = document.getElementById('btn-fechar-menu-mobile');
+            const sidebar = document.getElementById('sidebar-admin');
+            const overlayMob = document.getElementById('overlay-menu-mobile');
 
-                    (ped.itens || []).forEach(item => {
-                        const chave = `${item.nome} ${item.variacaoDesc ? `(${item.variacaoDesc})` : ''}`;
-                        contagemVendasMap[chave] = (contagemVendasMap[chave] || 0) + item.quantidade;
+            function abrirMenuMobile() {
+                sidebar.classList.remove('-translate-x-full');
+                overlayMob.classList.remove('hidden');
+            }
+
+            function fecharMenuMobile() {
+                sidebar.classList.add('-translate-x-full');
+                overlayMob.classList.add('hidden');
+            }
+
+            if(btnMenuMob) btnMenuMob.addEventListener('click', abrirMenuMobile);
+            if(btnFecharMob) btnFecharMob.addEventListener('click', fecharMenuMobile);
+            if(overlayMob) overlayMob.addEventListener('click', fecharMenuMobile);
+        });
+
+        function alternarAba(soVitrine) {
+            modoFiltroVitrine = soVitrine;
+            const btnEstoque = document.getElementById('nav-estoque');
+            const btnVitrine = document.getElementById('nav-vitrine');
+            const titulo = document.getElementById('titulo-secao');
+            const subtitulo = document.getElementById('subtitulo-secao');
+
+            if (soVitrine) {
+                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
+                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
+                titulo.textContent = "Vitrine da Loja";
+                subtitulo.textContent = "Exibindo apenas os produtos ativados para aparecer no catálogo público";
+            } else {
+                btnEstoque.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-rose-gold text-white shadow text-left text-xs";
+                btnVitrine.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold bg-white/70 text-gray-700 hover:bg-white transition text-left text-xs";
+                titulo.textContent = "Gestão de Estoque";
+                subtitulo.textContent = "Cadastre seus produtos e ajuste individualmente o estoque de cada variação";
+            }
+
+            const sidebar = document.getElementById('sidebar-admin');
+            const overlayMob = document.getElementById('overlay-menu-mobile');
+            if(sidebar) sidebar.classList.add('-translate-x-full');
+            if(overlayMob) overlayMob.classList.add('hidden');
+
+            renderizarProdutosAdmin();
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            const loginOverlay = document.getElementById('login-overlay');
+            const adminWrapper = document.getElementById('admin-main-wrapper');
+
+            if (user) {
+                try {
+                    const docRef = doc(db, "usuarios_autorizados", user.email);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        loginOverlay.style.display = 'none';
+                        adminWrapper.style.display = 'flex';
+                        carregarProdutos();
+                    } else {
+                        alert(`Acesso não autorizado: O e-mail ${user.email} não tem permissão neste painel.`);
+                        await signOut(auth);
+                        loginOverlay.style.display = 'flex';
+                        adminWrapper.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error("Erro ao verificar credenciais:", error);
+                    alert("Aviso do Firebase: Verifique as regras de segurança.");
+                    await signOut(auth);
+                    loginOverlay.style.display = 'flex';
+                    adminWrapper.style.display = 'none';
+                }
+            } else {
+                loginOverlay.style.display = 'flex';
+                adminWrapper.style.display = 'none';
+            }
+        });
+
+        async function fazerLoginGoogle() {
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (error) {
+                console.error("Erro ao realizar login Google:", error);
+                alert("Erro ao conectar com o Google: " + error.message);
+            }
+        }
+
+        async function fazerLogout() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Erro ao sair:", error);
+            }
+        }
+
+        async function carregarProdutos() {
+            try {
+                const snap = await getDocs(collection(db, "produtos"));
+                listaProdutos = [];
+                snap.forEach(d => listaProdutos.push({ id: d.id, ...d.data() }));
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error("Erro ao carregar produtos:", err);
+            }
+        }
+
+        function adicionarCampoFoto(url = '', descricao = '', quantidade = 10, indisponivel = false) {
+            const container = document.getElementById('container-fotos-dinamico');
+            const div = document.createElement('div');
+            div.className = "bg-white p-4 rounded-xl border border-rose-200 grid grid-cols-1 md:grid-cols-3 gap-3 relative group shadow-sm items-end";
+            div.innerHTML = `
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 font-bold text-xs bg-red-50 p-1 rounded-lg cursor-pointer">🗑️ Remover</button>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Imagem da Variação</label>
+                    <input type="text" class="input-foto-url w-full px-3 py-2 border rounded-lg text-xs" value="${url}" placeholder="URL ou faça upload abaixo">
+                    <input type="file" accept="image/*" class="input-file-crop mt-1 w-full text-[10px] text-gray-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Nome da Variação / Cor</label>
+                    <input type="text" class="input-foto-desc w-full px-3 py-2 border rounded-lg text-xs" value="${descricao}" placeholder="Ex: Rosa Casal, Estampa 01">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Estoque da Variação</label>
+                    <input type="number" min="0" class="input-foto-qtd w-full px-3 py-2 border rounded-lg text-xs" value="${quantidade !== undefined ? quantidade : 10}">
+                </div>
+            `;
+            
+            div.querySelector('.input-file-crop').addEventListener('change', function() {
+                iniciarRecorte(this);
+            });
+
+            container.prepend(div);
+        }
+
+        function iniciarRecorte(input) {
+            const file = input.files[0];
+            if (!file) return;
+            inputTargetGlobal = input.parentElement.querySelector('.input-foto-url');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('imagem-para-recortar');
+                img.src = e.target.result;
+                document.getElementById('modal-recorte').classList.remove('hidden');
+                if (cropperInstance) cropperInstance.destroy();
+                cropperInstance = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function aplicarRecorte() {
+            if (!cropperInstance || !inputTargetGlobal) return;
+            const canvas = cropperInstance.getCroppedCanvas({ width: 800, height: 800 });
+            inputTargetGlobal.value = canvas.toDataURL('image/jpeg', 0.85);
+            fecharModalRecorte();
+        }
+
+        function fecharModalRecorte() {
+            document.getElementById('modal-recorte').classList.add('hidden');
+            if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
+        }
+
+        async function salvarProduto(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const nome = document.getElementById('prod-nome').value;
+            const categoria = document.getElementById('prod-categoria').value;
+            const valor = parseFloat(document.getElementById('prod-valor').value);
+            const exibirVitrine = document.getElementById('prod-vitrine').checked;
+
+            let variacoes = [];
+            document.querySelectorAll('#container-fotos-dinamico > div').forEach(div => {
+                const url = div.querySelector('.input-foto-url').value;
+                const desc = div.querySelector('.input-foto-desc').value;
+                const qtd = parseInt(div.querySelector('.input-foto-qtd').value) || 0;
+                if (url) {
+                    variacoes.push({ 
+                        foto: url, 
+                        descricao: desc, 
+                        quantidade: qtd,
+                        indisponivel: qtd <= 0 
                     });
                 }
             });
 
-            document.getElementById('dash-total-investido').textContent = `R$ ${totalInvestidoEstoque.toFixed(2)}`;
-            document.getElementById('dash-total-vendas').textContent = `R$ ${totalVendasConcluidas.toFixed(2)}`;
-            document.getElementById('dash-lucro-estimado').textContent = `R$ ${(totalVendasConcluidas - (totalInvestidoEstoque * 0.4)).toFixed(2)}`;
+            const data = { nome, categoria, valor, exibirVitrine, variacoes };
 
-            // RANKING MAIS VENDIDOS
-            const containerMaisVendidos = document.getElementById('container-mais-vendidos');
-            containerMaisVendidos.innerHTML = '';
+            try {
+                if (id) {
+                    await updateDoc(doc(db, "produtos", id), data);
+                } else {
+                    await addDoc(collection(db, "produtos"), data);
+                }
 
-            const listaOrdenada = Object.entries(contagemVendasMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+                fecharFormulario();
+                carregarProdutos();
+            } catch (err) {
+                alert("Erro ao salvar produto no Firestore.");
+                console.error(err);
+            }
+        }
 
-            if (listaOrdenada.length === 0) {
-                containerMaisVendidos.innerHTML = '<p class="text-xs text-gray-400 py-2">Nenhum produto vendido ainda.</p>';
+        // RENDERIZAÇÃO INDIVIDUAL POR CADA VARIAÇÃO
+        function renderizarProdutosAdmin() {
+            const container = document.getElementById('container-lista-produtos');
+            container.innerHTML = '';
+            
+            const produtosFiltrados = modoFiltroVitrine 
+                ? listaProdutos.filter(p => p.exibirVitrine !== false)
+                : listaProdutos;
+
+            if (produtosFiltrados.length === 0) {
+                container.innerHTML = `<div class="bg-white p-8 text-center text-gray-400 text-xs rounded-2xl border border-rose-100">Nenhum produto encontrado.</div>`;
                 return;
             }
 
-            listaOrdenada.forEach(([nomeProd, qtdVendida], idx) => {
-                const div = document.createElement('div');
-                div.className = "py-3 flex justify-between items-center text-xs";
-                div.innerHTML = `
-                    <span class="font-bold text-gray-800">${idx + 1}. ${nomeProd}</span>
-                    <span class="bg-rose-50 text-rose-gold font-extrabold px-3 py-1 rounded-full">${qtdVendida} un. vendidas</span>
-                `;
-                containerMaisVendidos.appendChild(div);
+            produtosFiltrados.forEach(p => {
+                const variacoes = p.variacoes && p.variacoes.length > 0 
+                    ? p.variacoes 
+                    : [{ foto: 'https://via.placeholder.com/50', descricao: '', quantidade: p.quantidade || 0, indisponivel: p.indisponivel || false }];
+
+                variacoes.forEach((v, indexVar) => {
+                    const eIndisponivel = v.indisponivel === true || (v.quantidade !== undefined && v.quantidade <= 0);
+                    const qtd = v.quantidade !== undefined ? v.quantidade : 0;
+                    const descExibicao = v.descricao ? ` - ${v.descricao}` : '';
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-3 md:p-4 rounded-2xl border border-rose-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3 transition hover:shadow-md";
+
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3 w-full md:w-auto">
+                            <img src="${v.foto}" class="w-12 h-12 md:w-14 md:h-14 object-cover rounded-xl border border-rose-200 ${eIndisponivel ? 'grayscale opacity-75' : ''}">
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-extrabold text-gray-800 text-xs md:text-sm truncate">${p.nome}${descExibicao}</h4>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase bg-gray-100 px-2 py-0.5 rounded">${p.categoria}</span>
+                                    <span class="text-rose-gold font-bold text-xs md:text-sm">R$ ${p.valor.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-100">
+                            
+                            <!-- BOTÃO DE AJUSTE RÁPIDO DE ESTOQUE DE QUANTIDADE -->
+                            <div class="flex items-center bg-gray-100 p-1 rounded-xl gap-1">
+                                <button type="button" class="btn-qtd-menos w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">-</button>
+                                <span class="text-xs font-extrabold px-1 text-gray-700 min-w-[24px] text-center">${qtd}</span>
+                                <button type="button" class="btn-qtd-mais w-7 h-7 bg-white rounded-lg font-bold text-xs shadow-sm hover:bg-rose-50 text-gray-700 cursor-pointer flex items-center justify-center">+</button>
+                            </div>
+
+                            <!-- BOTÃO TOGGLE INDISPONÍVEL / DISPONÍVEL -->
+                            <button type="button" class="btn-toggle-indisponivel text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition ${eIndisponivel ? 'bg-red-100 text-red-600 border border-red-200' : 'bg-green-100 text-green-700 border border-green-200'}">
+                                ${eIndisponivel ? '🚫 Indisponível' : '🟢 Disponível'}
+                            </button>
+
+                            <div class="flex items-center gap-2">
+                                <button type="button" class="btn-editar bg-rose-50 text-rose-gold border border-rose-200 px-3 py-1.5 rounded-xl font-bold text-xs hover:bg-rose-100 cursor-pointer">Editar Produto</button>
+                                <button type="button" class="btn-excluir text-red-500 hover:bg-red-50 p-1.5 rounded-xl font-bold text-xs cursor-pointer">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+
+                    card.querySelector('.btn-qtd-menos').addEventListener('click', () => alterarEstoqueVariacaoRapido(p.id, indexVar, -1));
+                    card.querySelector('.btn-qtd-mais').addEventListener('click', () => alterarEstoqueVariacaoRapido(p.id, indexVar, 1));
+                    card.querySelector('.btn-toggle-indisponivel').addEventListener('click', () => alternarStatusVariacaoIndisponivel(p.id, indexVar, !eIndisponivel));
+                    card.querySelector('.btn-editar').addEventListener('click', () => editarProduto(p.id));
+                    card.querySelector('.btn-excluir').addEventListener('click', () => removerProduto(p.id));
+
+                    container.appendChild(card);
+                });
             });
         }
 
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                document.getElementById('login-overlay').style.display = 'none';
-                document.getElementById('admin-main-wrapper').style.display = 'flex';
-                carregarDados();
+        async function alterarEstoqueVariacaoRapido(id, indexVar, delta) {
+            const prod = listaProdutos.find(p => p.id === id);
+            if (!prod || !prod.variacoes || !prod.variacoes[indexVar]) return;
+
+            const variacao = prod.variacoes[indexVar];
+            const novaQtd = Math.max(0, (variacao.quantidade || 0) + delta);
+            variacao.quantidade = novaQtd;
+            variacao.indisponivel = novaQtd <= 0;
+
+            try {
+                await updateDoc(doc(db, "produtos", id), { variacoes: prod.variacoes });
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error("Erro ao atualizar estoque da variação:", err);
             }
-        });
+        }
+
+        async function alternarStatusVariacaoIndisponivel(id, indexVar, novoStatus) {
+            const prod = listaProdutos.find(p => p.id === id);
+            if (!prod || !prod.variacoes || !prod.variacoes[indexVar]) return;
+
+            prod.variacoes[indexVar].indisponivel = novoStatus;
+
+            try {
+                await updateDoc(doc(db, "produtos", id), { variacoes: prod.variacoes });
+                renderizarProdutosAdmin();
+            } catch (err) {
+                console.error("Erro ao alterar disponibilidade da variação:", err);
+            }
+        }
+
+        function abrirFormularioNovo() {
+            document.getElementById('prod-id').value = '';
+            document.getElementById('produto-form').reset();
+            
+            const toggleInput = document.getElementById('prod-vitrine');
+            toggleInput.checked = true;
+            toggleInput.dispatchEvent(new Event('change'));
+
+            document.getElementById('container-fotos-dinamico').innerHTML = '';
+            adicionarCampoFoto();
+            document.getElementById('form-container').classList.remove('hidden');
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function fecharFormulario() {
+            document.getElementById('form-container').classList.add('hidden');
+        }
+
+        function editarProduto(id) {
+            const p = listaProdutos.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-nome').value = p.nome;
+            document.getElementById('prod-categoria').value = p.categoria;
+            document.getElementById('prod-valor').value = p.valor;
+            
+            const toggleInput = document.getElementById('prod-vitrine');
+            toggleInput.checked = p.exibirVitrine !== false;
+            toggleInput.dispatchEvent(new Event('change'));
+
+            const container = document.getElementById('container-fotos-dinamico');
+            container.innerHTML = '';
+            (p.variacoes || []).forEach(v => {
+                adicionarCampoFoto(v.foto, v.descricao || '', v.quantidade !== undefined ? v.quantidade : 10, v.indisponivel);
+            });
+            document.getElementById('form-container').classList.remove('hidden');
+            document.getElementById('form-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function removerProduto(id) {
+            if (confirm("Deseja apagar este produto e todas as suas variações?")) {
+                try {
+                    await deleteDoc(doc(db, "produtos", id));
+                    carregarProdutos();
+                } catch (err) {
+                    alert("Erro ao excluir produto.");
+                    console.error(err);
+                }
+            }
+        }
     </script>
 </body>
 </html>
